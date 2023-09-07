@@ -2,7 +2,7 @@ import fiona
 import svgwrite
 
 # Open the shapefile
-with fiona.open("my_shapefile.shp") as shapefile:
+with fiona.open("shapefiles_3d/MBSP_3Dpas.shp") as shapefile:
   # Create an SVG writer
   writer = svgwrite.Drawing()
 
@@ -18,4 +18,4 @@ with fiona.open("my_shapefile.shp") as shapefile:
     writer.add(element)
 
   # Write the SVG to a file
-  writer.write("my_shapefile.svg")
+  writer.write("madison.svg")
