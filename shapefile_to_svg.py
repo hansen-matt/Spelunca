@@ -4,7 +4,7 @@ import fiona
 import svgwrite
 
 # Open the shapefile
-with fiona.open("shapefiles_3d/MBSP_3Dpas.shp") as shapefile:
+with fiona.open("input_3d/MBSP_3Dpas.shp") as shapefile:
   # Create an SVG writer
   writer = svgwrite.Drawing()
 
