@@ -46,6 +46,7 @@ def rgb_to_hex(rgb):
 # Open the shapefile for reading
 polygonz_count = -1 
 no_data_count = -1
+min_d = 10000;
 try:
     with shapefile.Reader(shapefile_path) as shp:
         print(shp)
@@ -59,7 +60,8 @@ try:
         # colors for depth
         depth_color = plt.cm.Blues_r
         #depth_norm = plt.Normalize(vmin=shp.zbox[0], vmax=shp.zbox[1])
-        depth_norm = plt.Normalize(vmin=shp.zbox[0], vmax=0)
+        #depth_norm = plt.Normalize(vmin=shp.zbox[0], vmax=0)
+        depth_norm = plt.Normalize(vmin=-130, vmax=0)
         print(f"min depth={shp.zbox[0]}   max depth={shp.zbox[1]}")
 
 
@@ -87,7 +89,8 @@ try:
                             avg_depth = np.mean(points_z)
                             fill_color = depth_color(depth_norm(avg_depth))
                             hex_color = rgb_to_hex(fill_color)
-                            
+                            min_d = min(min_d, avg_depth)
+
                             svg_document.add(svg_document.polygon(points=offset_xy*cm, fill=hex_color, stroke='black', stroke_width=0.1*mm))
                             polygonz_count += 1
                         else:
@@ -128,6 +131,7 @@ try:
 except shapefile.ShapefileException as e:
     print(f"Error processing shapefile: {str(e)}")
 
+print(f"Maximum depth: {min_d}")
 print(f"polygonz count {polygonz_count}")
 # Save the SVG file
 svg_document.save()
