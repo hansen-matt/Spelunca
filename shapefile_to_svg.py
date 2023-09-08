@@ -37,7 +37,11 @@ def is_finite_list_of_tuples(list_of_tuples):
   return True
 
 
-offset = [402000, 33700] # TODO calculate this
+#offset = [402000, 33700] # TODO calculate this
+offset = [33941, 404807] # TODO calculate this
+
+minx = 1e8
+miny = 1e8
 
 # Open the shapefile for reading
 polygonz_count = -1 
@@ -65,8 +69,11 @@ try:
                     points_z   = geometry.z
                     points_xyz = [(x,y,z) for (x,y),z in zip(points_xy, points_z)]
 
-                    projected_xy = [projector.transform(y, x) for x, y, z in points_xyz]
+                    projected_xy = [projector.transform(x, y) for x, y, z in points_xyz]
                     scaled_xy = [(x * scale_factor, y * scale_factor) for x, y in projected_xy]
+                    minx = min(minx, min( x for (x,y) in scaled_xy ))
+                    miny = min(miny, min( y for (x,y) in scaled_xy ))
+
                     offset_xy = np.subtract(scaled_xy, offset)
                     print(f"scaled_xy {scaled_xy}")
                     print(f"offset_xy {offset_xy}")
@@ -113,6 +120,7 @@ try:
 except shapefile.ShapefileException as e:
     print(f"Error processing shapefile: {str(e)}")
 
+print(f"minx {minx} miny {miny}")
 print(f"polygonz count {polygonz_count}")
 # Save the SVG file
 svg_document.save()
