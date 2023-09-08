@@ -9,6 +9,7 @@ import math
 
 # Input shapefile path (update with your file path)
 shapefile_path = 'input_3d/MBSP_3Dprism.zip'
+shapefile_prj_path = shapefile_path.replace("zip","prj");
 
 # Output SVG file path (update with your desired output file path)
 output_svg_path = 'madison.svg'
@@ -18,7 +19,7 @@ svg_document = svgwrite.Drawing(output_svg_path, profile='tiny', size=(210*mm, 2
 
 # Define the UTM projection suitable for your area of interest
 utm_zone = 17  # Modify this according to your area
-with open('input_3d/MBSP_3Dprism.prj' ,'r') as f:
+with open(shapefile_prj_path ,'r') as f:
         inProj = pyproj.Proj(f.read())
 outProj = pyproj.Proj(f"EPSG:326{utm_zone}")
 projector = pyproj.Transformer.from_proj(inProj, outProj)
