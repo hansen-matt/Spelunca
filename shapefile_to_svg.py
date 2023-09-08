@@ -17,7 +17,7 @@ shapefile_prj_path = shapefile_path.replace("zip","prj");
 output_svg_path = 'madison.svg'
 
 # Create an SVG drawing
-svg_document = svgwrite.Drawing(output_svg_path, profile='full') #, size=(17*in, 10*in))
+svg_document = svgwrite.Drawing(output_svg_path, profile='tiny') #, size=(17*in, 10*in))
 
 # Define the UTM projection suitable for your area of interest
 utm_zone = 17  # Modify this according to your area
@@ -91,7 +91,7 @@ try:
                             hex_color = rgb_to_hex(fill_color)
                             min_d = min(min_d, avg_depth)
 
-                            svg_document.add(svg_document.polygon(points=offset_xy*cm, fill=hex_color, stroke='black', stroke_width=0.1*mm))
+                            svg_document.add(svg_document.polygon(points=offset_xy, fill=hex_color, stroke='black', stroke_width=0.1*mm))
                             polygonz_count += 1
                         else:
                             print(f"points_xyz {points_xyz}")
