@@ -52,18 +52,17 @@ try:
                     points_z   = geometry.z
                     points_xyz = [(x,y,z) for (x,y),z in zip(points_xy, points_z)]
 
-                    #xy_points = [projector.transform(y, x) for x, y, z in points]
-                    #xy_points = [projector.transform(y, x) for x, y in points]
-                    scaled_xy = [(x * scale_factor, y * scale_factor) for x, y in points_xy]
+                    projected_xy = [projector.transform(y, x) for x, y, z in points_xyz]
+                    scaled_xy = [(x * scale_factor, y * scale_factor) for x, y in projected_xy]
 
                     if scaled_xy:
                         if is_finite_list_of_tuples(scaled_xy):
                             svg_document.add(svg_document.polygon(points=scaled_xy, fill='none', stroke='black', stroke_width=0.5*mm))
                             polygonz_count += 1
                         else:
-                            print(f"points {points}")
-                            print(f"xy_points {xy_points}")
-                            print(f"not finite? {scaled_xy}")
+                            print(f"points_xyz {points_xyz}")
+                            print(f"projected_xy {projected_xy}")
+                            print(f"scaled_xy {scaled_xy}")
                     else:
                         no_data_count += 1
                         print(f"no data {no_data_count}")
