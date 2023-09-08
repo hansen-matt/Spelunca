@@ -15,7 +15,7 @@ shapefile_prj_path = shapefile_path.replace("zip","prj");
 output_svg_path = 'madison.svg'
 
 # Create an SVG drawing
-svg_document = svgwrite.Drawing(output_svg_path, profile='full', size=(17*25.4*mm, 10*25.4*mm))
+svg_document = svgwrite.Drawing(output_svg_path, profile='full') #, size=(17*in, 10*in))
 
 # Define the UTM projection suitable for your area of interest
 utm_zone = 17  # Modify this according to your area
