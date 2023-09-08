@@ -4,9 +4,10 @@ import shapefile
 import svgwrite
 from svgwrite import cm, mm
 import pyproj
+import array
 
 # Input shapefile path (update with your file path)
-shapefile_path = 'input_3d/MBSP_3Dprism.shp'
+shapefile_path = 'input_3d/MBSP_3Dprism.zip'
 
 # Output SVG file path (update with your desired output file path)
 output_svg_path = 'madison.svg'
@@ -22,8 +23,8 @@ projector = pyproj.Transformer.from_crs("EPSG:4326", f"EPSG:326{utm_zone}", alwa
 scale_factor = 100.0 / 12.0  # Convert 100 feet to inches
 
 # Open the shapefile for reading
-polygonz_count = 0
-no_data_count = 0
+polygonz_count = -1 
+no_data_count = -1
 try:
     with shapefile.Reader(shapefile_path) as shp:
 
@@ -37,6 +38,7 @@ try:
             if geometry.shapeType == shapefile.POLYGONZ:
                 for part in geometry.parts:
                     points = geometry.points[part:part + geometry.parts[0]]
+                    bbox = geometry.bbox[part:part + geometry.parts[0]]
                     xy_points = [projector.transform(y, x) for x, y, z in points]
                     projected_points = [(x * scale_factor, y * scale_factor) for x, y in xy_points]
 
@@ -46,10 +48,14 @@ try:
                     else:
                         no_data_count += 1
                         print(f"no data {no_data_count}")
-                        print(shape_record)
-                        print(geometry)
-                        print(geometry.parts)
-                        print(points)
+                        print(f"shape_record {shape_record}")
+                        print(f"geometry {geometry}")
+                        print(f"geometry.parts {geometry.parts}")
+                        print(f"geometry.bbox {bbox}")
+                        print(f"geometry.points {geometry.points[part:part + geometry.parts[0]]}")
+                        print(f"points {points}")
+                        print(f"shapeType {geometry.shapeTypeName}")
+                        print("")
 
             # Handle other geometry types (e.g., Point, LineString)
             elif geometry.shapeType == shapefile.POINT:
