@@ -26,7 +26,7 @@ outProj = pyproj.Proj(f"EPSG:326{utm_zone}")
 projector = pyproj.Transformer.from_proj(inProj, outProj)
 
 # Define the scale factor for 100 feet = 1 inch
-scale_factor = 1.0 / (100.0 / 12.0)  # Convert 100 feet to inches
+scale_factor = 12.0 / (10.0)  # Convert 100 feet to inches
 
 
 def is_finite_list_of_tuples(list_of_tuples):
