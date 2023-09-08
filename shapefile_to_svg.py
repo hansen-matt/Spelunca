@@ -25,8 +25,8 @@ with open(shapefile_prj_path ,'r') as f:
 outProj = pyproj.Proj(f"EPSG:326{utm_zone}")
 projector = pyproj.Transformer.from_proj(inProj, outProj)
 
-# Define the scale factor for 100 feet = 1 inch
-scale_factor = 12.0 / (10.0)  # Convert 100 feet to inches
+# Define the scale factor for 10 feet = 1 inch
+scale_factor = 12.0*2.54 / (10.0)  # Convert 100 feet to cm
 
 
 def is_finite_list_of_tuples(list_of_tuples):
@@ -69,7 +69,7 @@ try:
 
                     if scaled_xy:
                         if is_finite_list_of_tuples(scaled_xy):
-                            svg_document.add(svg_document.polygon(points=offset_xy*cm, fill='blue', stroke='black', stroke_width=0.5*mm))
+                            svg_document.add(svg_document.polygon(points=offset_xy*cm, fill='blue', stroke='black', stroke_width=0.1*mm))
                             polygonz_count += 1
                         else:
                             print(f"points_xyz {points_xyz}")
