@@ -5,6 +5,7 @@ import svgwrite
 from svgwrite import cm, mm
 import pyproj
 import array
+import math
 
 # Input shapefile path (update with your file path)
 shapefile_path = 'input_3d/MBSP_3Dprism.zip'
@@ -21,6 +22,15 @@ projector = pyproj.Transformer.from_crs("EPSG:4326", f"EPSG:326{utm_zone}", alwa
 
 # Define the scale factor for 100 feet = 1 inch
 scale_factor = 100.0 / 12.0  # Convert 100 feet to inches
+
+
+def is_finite_list_of_tuples(list_of_tuples):
+  for tuple in list_of_tuples:
+    for element in tuple:
+      if not math.isfinite(element):
+        return False
+  return True
+
 
 # Open the shapefile for reading
 polygonz_count = -1 
@@ -39,13 +49,21 @@ try:
             if geometry.shapeType == shapefile.POLYGONZ:
                 for part in geometry.parts:
                     points = geometry.points[part:part + geometry.parts[0]]
+                    points = geometry.points #[part:part + geometry.parts[0]]
                     bbox = geometry.bbox[part:part + geometry.parts[0]]
-                    xy_points = [projector.transform(y, x) for x, y, z in points]
+                    #xy_points = [projector.transform(y, x) for x, y, z in points]
+                    #xy_points = [projector.transform(y, x) for x, y in points]
+                    xy_points = points
                     projected_points = [(x * scale_factor, y * scale_factor) for x, y in xy_points]
 
                     if projected_points:
-                        svg_document.add(svg_document.polygon(points=projected_points, fill='none', stroke='black', stroke_width=0.5*mm))
-                        polygonz_count += 1
+                        if is_finite_list_of_tuples(projected_points):
+                            svg_document.add(svg_document.polygon(points=projected_points, fill='none', stroke='black', stroke_width=0.5*mm))
+                            polygonz_count += 1
+                        else:
+                            print(f"points {points}")
+                            print(f"xy_points {xy_points}")
+                            print(f"not finite? {projected_points}")
                     else:
                         no_data_count += 1
                         print(f"no data {no_data_count}")
@@ -54,6 +72,8 @@ try:
                         print(f"geometry.parts {geometry.parts}")
                         print(f"geometry.parts[0] {geometry.parts[0]}")
                         print(f"geometry.points {geometry.points}")
+                        print(f"geometry.points[0] {geometry.points[0]}")
+                        print(f"len(geometry.points) {len(geometry.points)}")
                         print(f"part {part}")
                         print(f"geometry.bbox {bbox}")
                         print(f"geometry.points {geometry.points[part:part + geometry.parts[0]]}")
