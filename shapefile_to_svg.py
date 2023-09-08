@@ -6,6 +6,7 @@ from svgwrite import cm, mm
 import pyproj
 import array
 import math
+import numpy as np
 
 # Input shapefile path (update with your file path)
 shapefile_path = 'input_3d/MBSP_3Dprism.zip'
@@ -36,6 +37,8 @@ def is_finite_list_of_tuples(list_of_tuples):
   return True
 
 
+offset = [2811, 235] # TODO calculate this
+
 # Open the shapefile for reading
 polygonz_count = -1 
 no_data_count = -1
@@ -64,10 +67,12 @@ try:
 
                     projected_xy = [projector.transform(y, x) for x, y, z in points_xyz]
                     scaled_xy = [(x * scale_factor, y * scale_factor) for x, y in projected_xy]
+                    offset_xy = np.subtract(scaled_xy, offset)
+                    #print(f"scaled_xy {scaled_xy}")
 
                     if scaled_xy:
                         if is_finite_list_of_tuples(scaled_xy):
-                            svg_document.add(svg_document.polygon(points=scaled_xy, fill='blue', stroke='black', stroke_width=0.5*mm))
+                            svg_document.add(svg_document.polygon(points=offset_xy, fill='blue', stroke='black', stroke_width=0.5*mm))
                             polygonz_count += 1
                         else:
                             print(f"points_xyz {points_xyz}")
