@@ -43,6 +43,12 @@ try:
     with shapefile.Reader(shapefile_path) as shp:
         print(shp)
 
+        minx = shp.bbox[0]
+        miny = shp.bbox[2]
+        minz = min( shp.zbox )
+        maxz = max( shp.zbox )
+        print(f"Minz: {minz} Maxz: {maxz}")
+
         # Loop through shapefile records
         for shape_record in shp.iterShapeRecords():
 
