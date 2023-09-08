@@ -57,8 +57,9 @@ try:
         offset = [scaled_bbox[0][0], scaled_bbox[1][1]]
 
         # colors for depth
-        depth_color = plt.cm.Blues
-        depth_norm = plt.Normalize(vmin=shp.zbox[0], vmax=shp.zbox[1])
+        depth_color = plt.cm.Blues_r
+        #depth_norm = plt.Normalize(vmin=shp.zbox[0], vmax=shp.zbox[1])
+        depth_norm = plt.Normalize(vmin=shp.zbox[0], vmax=0)
         print(f"min depth={shp.zbox[0]}   max depth={shp.zbox[1]}")
 
 
