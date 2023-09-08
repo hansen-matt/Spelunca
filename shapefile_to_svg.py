@@ -37,12 +37,6 @@ def is_finite_list_of_tuples(list_of_tuples):
   return True
 
 
-#offset = [402000, 33700] # TODO calculate this
-offset = [33941, 404807] # TODO calculate this
-
-minx = 1e8
-miny = 1e8
-
 # Open the shapefile for reading
 polygonz_count = -1 
 no_data_count = -1
@@ -50,11 +44,10 @@ try:
     with shapefile.Reader(shapefile_path) as shp:
         print(shp)
 
-        minx = shp.bbox[0]
-        miny = shp.bbox[2]
-        minz = min( shp.zbox )
-        maxz = max( shp.zbox )
-        print(f"Minz: {minz} Maxz: {maxz}")
+        bbox = [(shp.bbox[0], shp.bbox[2], shp.zbox[0]), (shp.bbox[1], shp.bbox[3], shp.zbox[1])]
+        transformed_bbox = [projector.transform(x, y) for x, y, z in bbox]
+        scaled_bbox = np.multiply(transformed_bbox, scale_factor)
+        offset = [scaled_bbox[0][0], scaled_bbox[1][0]]
 
         # Loop through shapefile records
         for shape_record in shp.iterShapeRecords():
@@ -71,16 +64,12 @@ try:
 
                     projected_xy = [projector.transform(x, y) for x, y, z in points_xyz]
                     scaled_xy = [(x * scale_factor, y * scale_factor) for x, y in projected_xy]
-                    minx = min(minx, min( x for (x,y) in scaled_xy ))
-                    miny = min(miny, min( y for (x,y) in scaled_xy ))
 
                     offset_xy = np.subtract(scaled_xy, offset)
-                    print(f"scaled_xy {scaled_xy}")
-                    print(f"offset_xy {offset_xy}")
 
                     if scaled_xy:
                         if is_finite_list_of_tuples(scaled_xy):
-                            svg_document.add(svg_document.polygon(points=offset_xy, fill='blue', stroke='black', stroke_width=0.5*mm))
+                            svg_document.add(svg_document.polygon(points=offset_xy*cm, fill='blue', stroke='black', stroke_width=0.5*mm))
                             polygonz_count += 1
                         else:
                             print(f"points_xyz {points_xyz}")
@@ -120,7 +109,6 @@ try:
 except shapefile.ShapefileException as e:
     print(f"Error processing shapefile: {str(e)}")
 
-print(f"minx {minx} miny {miny}")
 print(f"polygonz count {polygonz_count}")
 # Save the SVG file
 svg_document.save()
