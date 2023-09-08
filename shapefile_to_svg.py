@@ -23,7 +23,6 @@ with open(shapefile_prj_path ,'r') as f:
         inProj = pyproj.Proj(f.read())
 outProj = pyproj.Proj(f"EPSG:326{utm_zone}")
 projector = pyproj.Transformer.from_proj(inProj, outProj)
-#projector = pyproj.Transformer.from_crs("EPSG:4326", f"EPSG:326{utm_zone}", always_xy=True)
 
 # Define the scale factor for 100 feet = 1 inch
 scale_factor = 100.0 / 12.0  # Convert 100 feet to inches
