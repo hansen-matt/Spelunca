@@ -7,6 +7,7 @@ import pyproj
 import array
 import math
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Input shapefile path (update with your file path)
 shapefile_path = 'input_3d/MBSP_3Dprism.zip'
@@ -38,6 +39,9 @@ def is_finite_list_of_tuples(list_of_tuples):
         return False
   return True
 
+def rgb_to_hex(rgb):
+    rgb = np.round( np.multiply(rgb, 256))
+    return '#{:02x}{:02x}{:02x}'.format(int(rgb[0]), int(rgb[1]), int(rgb[2]))
 
 # Open the shapefile for reading
 polygonz_count = -1 
@@ -51,6 +55,12 @@ try:
         scaled_bbox = np.multiply(transformed_bbox, scale_factor_xy)
         # get the min x, and what would have been the max y, because y is inverted with the scale factor so max is min
         offset = [scaled_bbox[0][0], scaled_bbox[1][1]]
+
+        # colors for depth
+        depth_color = plt.cm.Blues
+        depth_norm = plt.Normalize(vmin=shp.zbox[0], vmax=shp.zbox[1])
+        print(f"min depth={shp.zbox[0]}   max depth={shp.zbox[1]}")
+
 
         # Loop through shapefile records
         for shape_record in shp.iterShapeRecords():
@@ -73,7 +83,11 @@ try:
 
                     if scaled_xy.all():
                         if is_finite_list_of_tuples(scaled_xy):
-                            svg_document.add(svg_document.polygon(points=offset_xy*cm, fill='blue', stroke='black', stroke_width=0.1*mm))
+                            avg_depth = np.mean(points_z)
+                            fill_color = depth_color(depth_norm(avg_depth))
+                            hex_color = rgb_to_hex(fill_color)
+                            
+                            svg_document.add(svg_document.polygon(points=offset_xy*cm, fill=hex_color, stroke='black', stroke_width=0.1*mm))
                             polygonz_count += 1
                         else:
                             print(f"points_xyz {points_xyz}")
