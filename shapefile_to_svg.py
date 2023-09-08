@@ -26,7 +26,7 @@ outProj = pyproj.Proj(f"EPSG:326{utm_zone}")
 projector = pyproj.Transformer.from_proj(inProj, outProj)
 
 # Define the scale factor for 100 feet = 1 inch
-scale_factor = 1.0 / (100.0 * 12.0)  # Convert 100 feet to inches
+scale_factor = 1.0 / (100.0 / 12.0)  # Convert 100 feet to inches
 
 
 def is_finite_list_of_tuples(list_of_tuples):
@@ -37,7 +37,7 @@ def is_finite_list_of_tuples(list_of_tuples):
   return True
 
 
-offset = [2811, 235] # TODO calculate this
+offset = [402000, 33700] # TODO calculate this
 
 # Open the shapefile for reading
 polygonz_count = -1 
@@ -68,7 +68,8 @@ try:
                     projected_xy = [projector.transform(y, x) for x, y, z in points_xyz]
                     scaled_xy = [(x * scale_factor, y * scale_factor) for x, y in projected_xy]
                     offset_xy = np.subtract(scaled_xy, offset)
-                    #print(f"scaled_xy {scaled_xy}")
+                    print(f"scaled_xy {scaled_xy}")
+                    print(f"offset_xy {offset_xy}")
 
                     if scaled_xy:
                         if is_finite_list_of_tuples(scaled_xy):
