@@ -50,6 +50,8 @@ try:
                 for part in geometry.parts:
                     points = geometry.points[part:part + geometry.parts[0]]
                     points = geometry.points #[part:part + geometry.parts[0]]
+                    z = geometry.z
+                    print(f"z {z}")
                     bbox = geometry.bbox[part:part + geometry.parts[0]]
                     #xy_points = [projector.transform(y, x) for x, y, z in points]
                     #xy_points = [projector.transform(y, x) for x, y in points]
