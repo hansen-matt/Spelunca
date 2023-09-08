@@ -18,7 +18,10 @@ svg_document = svgwrite.Drawing(output_svg_path, profile='tiny', size=(210*mm, 2
 
 # Define the UTM projection suitable for your area of interest
 utm_zone = 17  # Modify this according to your area
-projector = pyproj.Transformer.from_crs("EPSG:4326", f"EPSG:326{utm_zone}", always_xy=True)
+inProj = pyproj.Proj('EPSG:4326', preserve_units=True)
+outProj = pyproj.Proj(f"EPSG:326{utm_zone}")
+projector = pyproj.Transformer.from_proj(inProj, outProj)
+#projector = pyproj.Transformer.from_crs("EPSG:4326", f"EPSG:326{utm_zone}", always_xy=True)
 
 # Define the scale factor for 100 feet = 1 inch
 scale_factor = 100.0 / 12.0  # Convert 100 feet to inches
