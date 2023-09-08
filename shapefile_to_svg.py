@@ -18,7 +18,8 @@ svg_document = svgwrite.Drawing(output_svg_path, profile='tiny', size=(210*mm, 2
 
 # Define the UTM projection suitable for your area of interest
 utm_zone = 17  # Modify this according to your area
-inProj = pyproj.Proj('EPSG:4326', preserve_units=True)
+with open('input_3d/MBSP_3Dprism.prj' ,'r') as f:
+        inProj = pyproj.Proj(f.read())
 outProj = pyproj.Proj(f"EPSG:326{utm_zone}")
 projector = pyproj.Transformer.from_proj(inProj, outProj)
 #projector = pyproj.Transformer.from_crs("EPSG:4326", f"EPSG:326{utm_zone}", always_xy=True)
