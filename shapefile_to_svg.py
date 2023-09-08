@@ -67,7 +67,7 @@ try:
 
                     if scaled_xy:
                         if is_finite_list_of_tuples(scaled_xy):
-                            svg_document.add(svg_document.polygon(points=scaled_xy, fill='none', stroke='black', stroke_width=0.5*mm))
+                            svg_document.add(svg_document.polygon(points=scaled_xy, fill='blue', stroke='black', stroke_width=0.5*mm))
                             polygonz_count += 1
                         else:
                             print(f"points_xyz {points_xyz}")
