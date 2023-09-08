@@ -27,6 +27,7 @@ polygonz_count = -1
 no_data_count = -1
 try:
     with shapefile.Reader(shapefile_path) as shp:
+        print(shp)
 
         # Loop through shapefile records
         for shape_record in shp.iterShapeRecords():
@@ -51,6 +52,9 @@ try:
                         print(f"shape_record {shape_record}")
                         print(f"geometry {geometry}")
                         print(f"geometry.parts {geometry.parts}")
+                        print(f"geometry.parts[0] {geometry.parts[0]}")
+                        print(f"geometry.points {geometry.points}")
+                        print(f"part {part}")
                         print(f"geometry.bbox {bbox}")
                         print(f"geometry.points {geometry.points[part:part + geometry.parts[0]]}")
                         print(f"points {points}")
