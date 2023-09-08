@@ -48,16 +48,13 @@ try:
             # Handle 3D polygons (shapefile.POLYGONZ) by ignoring the Z-coordinate
             if geometry.shapeType == shapefile.POLYGONZ:
                 for part in geometry.parts:
-                    #points = geometry.points[part:part + geometry.parts[0]]
-                    raw_xy = geometry.points #[part:part + geometry.parts[0]]
-                    raw_z = geometry.z
-                    raw_points = [(x,y,z) for (x,y),z in zip(raw_xy, raw_z)]
-                    print(raw_points)
-                    bbox = geometry.bbox[part:part + geometry.parts[0]]
+                    points_xy  = geometry.points #[part:part + geometry.parts[0]]
+                    points_z   = geometry.z
+                    points_xyz = [(x,y,z) for (x,y),z in zip(points_xy, points_z)]
+
                     #xy_points = [projector.transform(y, x) for x, y, z in points]
                     #xy_points = [projector.transform(y, x) for x, y in points]
-                    xy_points = points
-                    projected_points = [(x * scale_factor, y * scale_factor) for x, y in xy_points]
+                    projected_points = [(x * scale_factor, y * scale_factor) for x, y in points_xy]
 
                     if projected_points:
                         if is_finite_list_of_tuples(projected_points):
