@@ -27,7 +27,9 @@ projector = pyproj.Transformer.from_proj(inProj, outProj)
 
 # Define the scale factor for 10 feet = 1 inch
 scale_factor = 12.0*2.54 / (10.0)  # Convert 100 feet to cm
-
+# y is north up, PNG is positive down, so invert
+scale_factor_xy = [scale_factor, -1*scale_factor]
+scale_factor_xyz = [scale_factor, -1*scale_factor, scale_factor]
 
 def is_finite_list_of_tuples(list_of_tuples):
   for tuple in list_of_tuples:
@@ -46,8 +48,9 @@ try:
 
         bbox = [(shp.bbox[0], shp.bbox[2], shp.zbox[0]), (shp.bbox[1], shp.bbox[3], shp.zbox[1])]
         transformed_bbox = [projector.transform(x, y) for x, y, z in bbox]
-        scaled_bbox = np.multiply(transformed_bbox, scale_factor)
-        offset = [scaled_bbox[0][0], scaled_bbox[1][0]]
+        scaled_bbox = np.multiply(transformed_bbox, scale_factor_xy)
+        # get the min x, and what would have been the max y, because y is inverted with the scale factor so max is min
+        offset = [scaled_bbox[0][0], scaled_bbox[1][1]]
 
         # Loop through shapefile records
         for shape_record in shp.iterShapeRecords():
@@ -63,11 +66,12 @@ try:
                     points_xyz = [(x,y,z) for (x,y),z in zip(points_xy, points_z)]
 
                     projected_xy = [projector.transform(x, y) for x, y, z in points_xyz]
-                    scaled_xy = [(x * scale_factor, y * scale_factor) for x, y in projected_xy]
+                    #scaled_xy = [(x * scale_factor, y * scale_factor) for x, y in projected_xy]
+                    scaled_xy = np.multiply(projected_xy, scale_factor_xy)
 
                     offset_xy = np.subtract(scaled_xy, offset)
 
-                    if scaled_xy:
+                    if scaled_xy.all():
                         if is_finite_list_of_tuples(scaled_xy):
                             svg_document.add(svg_document.polygon(points=offset_xy*cm, fill='blue', stroke='black', stroke_width=0.1*mm))
                             polygonz_count += 1
