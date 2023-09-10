@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Input shapefile path (update with your file path)
-shapefile_path = 'input_3d/MBSP_3Dprism.zip'
+shapefile_path = 'input_3d/MBSP_3Dpas.zip'
 shapefile_prj_path = shapefile_path.replace("zip","prj");
 
 # Output SVG file path (update with your desired output file path)
@@ -95,7 +95,7 @@ try:
                             shallowest = max(shallowest, min_depth)
                             deepest = min(deepest, max_depth)
 
-                            svg_document.add(svg_document.polygon(points=offset_xy, fill=hex_color, stroke='black', stroke_width=0.01*mm))
+                            svg_document.add(svg_document.polygon(points=offset_xy, fill=hex_color, stroke='none', stroke_width=0.01*mm))
                             polygonz_count += 1
                         else:
                             print(f"points_xyz {points_xyz}")
