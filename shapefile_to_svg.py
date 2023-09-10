@@ -46,7 +46,8 @@ def rgb_to_hex(rgb):
 # Open the shapefile for reading
 polygonz_count = -1 
 no_data_count = -1
-min_d = 10000;
+shallowest = -10000;
+deepest = 0;
 try:
     with shapefile.Reader(shapefile_path) as shp:
         print(shp)
@@ -86,12 +87,15 @@ try:
 
                     if scaled_xy.all():
                         if is_finite_list_of_tuples(scaled_xy):
+                            min_depth = np.min(points_z)
                             avg_depth = np.mean(points_z)
-                            fill_color = depth_color(depth_norm(avg_depth))
+                            max_depth = np.max(points_z)
+                            fill_color = depth_color(depth_norm(min_depth))
                             hex_color = rgb_to_hex(fill_color)
-                            min_d = min(min_d, avg_depth)
+                            shallowest = max(shallowest, min_depth)
+                            deepest = min(deepest, max_depth)
 
-                            svg_document.add(svg_document.polygon(points=offset_xy, fill=hex_color, stroke='black', stroke_width=0.1*mm))
+                            svg_document.add(svg_document.polygon(points=offset_xy, fill=hex_color, stroke='black', stroke_width=0.01*mm))
                             polygonz_count += 1
                         else:
                             print(f"points_xyz {points_xyz}")
@@ -131,7 +135,8 @@ try:
 except shapefile.ShapefileException as e:
     print(f"Error processing shapefile: {str(e)}")
 
-print(f"Maximum depth: {min_d}")
+print(f"Minimum depth: {shallowest}")
+print(f"Maximum depth: {deepest}")
 print(f"polygonz count {polygonz_count}")
 # Save the SVG file
 svg_document.save()
