@@ -27,7 +27,7 @@ outProj = pyproj.Proj(f"EPSG:326{utm_zone}")
 projector = pyproj.Transformer.from_proj(inProj, outProj)
 
 # Define the scale factor for 10 feet = 1 inch
-scale_factor = 12.0*2.54 / (10.0)  # Convert 100 feet to cm
+scale_factor = 12.0*2.54 / (10.0)  # Convert 10 feet to cm
 # y is north up, PNG is positive down, so invert
 scale_factor_xy = [scale_factor, -1*scale_factor]
 scale_factor_xyz = [scale_factor, -1*scale_factor, scale_factor]
