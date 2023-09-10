@@ -43,11 +43,12 @@ def rgb_to_hex(rgb):
     rgb = np.round( np.multiply(rgb, 256))
     return '#{:02x}{:02x}{:02x}'.format(int(rgb[0]), int(rgb[1]), int(rgb[2]))
 
-# Open the shapefile for reading
 polygonz_count = -1 
 no_data_count = -1
 shallowest = -10000;
 deepest = 0;
+polygon_list = [];
+# Open the shapefile for reading
 try:
     with shapefile.Reader(shapefile_path) as shp:
         print(shp)
@@ -96,7 +97,8 @@ try:
                             deepest = min(deepest, max_depth)
 
                             polygon = svg_document.polygon(points=offset_xy, fill=hex_color, stroke='none', stroke_width=0.01*mm)
-                            svg_document.add(polygon)
+                            polygon_list.append( (min_depth, polygon) )
+#                            svg_document.add(polygon)
                             polygonz_count += 1
                         else:
                             print(f"points_xyz {points_xyz}")
@@ -132,6 +134,12 @@ try:
                 xy_points = [(x * scale_factor , y * scale_factor ) for x, y, z in projector.transform(*zip(*points)) if x is not None and y is not None]
                 if xy_points:
                     svg_document.add(svg_document.polyline(points=xy_points, fill='none', stroke='black', stroke_width=0.5*mm))
+
+
+        polygon_list.sort(key=lambda a: a[0])
+        for polygon_depth in polygon_list:
+            polygon = polygon_depth[1]
+            svg_document.add(polygon)
 
 except shapefile.ShapefileException as e:
     print(f"Error processing shapefile: {str(e)}")
