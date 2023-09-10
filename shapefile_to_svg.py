@@ -95,7 +95,8 @@ try:
                             shallowest = max(shallowest, min_depth)
                             deepest = min(deepest, max_depth)
 
-                            svg_document.add(svg_document.polygon(points=offset_xy, fill=hex_color, stroke='none', stroke_width=0.01*mm))
+                            polygon = svg_document.polygon(points=offset_xy, fill=hex_color, stroke='none', stroke_width=0.01*mm)
+                            svg_document.add(polygon)
                             polygonz_count += 1
                         else:
                             print(f"points_xyz {points_xyz}")
