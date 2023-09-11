@@ -20,6 +20,8 @@ output_svg_path = 'madison.svg'
 # Create an SVG drawing
 svg_document = svgwrite.Drawing(output_svg_path, profile='tiny', size=(36*inch, 24*inch))
 inkscape = Inkscape(svg_document)
+layer = inkscape.layer(label="depth_color", locked=True)
+svg_document.add(layer)
 
 # Define the UTM projection suitable for your area of interest
 utm_zone = 17  # Modify this according to your area
