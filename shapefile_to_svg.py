@@ -2,7 +2,8 @@
 
 import shapefile
 import svgwrite
-from svgwrite import cm, mm
+from svgwrite import cm, mm, inch
+from svgwrite.extensions import Inkscape
 import pyproj
 import array
 import math
@@ -17,7 +18,8 @@ shapefile_prj_path = shapefile_path.replace("zip","prj");
 output_svg_path = 'madison.svg'
 
 # Create an SVG drawing
-svg_document = svgwrite.Drawing(output_svg_path, profile='tiny') #, size=(17*in, 10*in))
+svg_document = svgwrite.Drawing(output_svg_path, profile='tiny', size=(36*inch, 24*inch))
+inkscape = Inkscape(svg_document)
 
 # Define the UTM projection suitable for your area of interest
 utm_zone = 17  # Modify this according to your area
@@ -26,8 +28,8 @@ with open(shapefile_prj_path ,'r') as f:
 outProj = pyproj.Proj(f"EPSG:326{utm_zone}")
 projector = pyproj.Transformer.from_proj(inProj, outProj)
 
-# Define the scale factor for 10 feet = 1 inch
-scale_factor = 12.0*2.54 / (10.0)  # Convert 10 feet to cm
+# Define the scale factor for 30 feet = 1 inch
+scale_factor = 12.0*2.54 / (30.0)  # Convert 30 feet to cm
 # y is north up, PNG is positive down, so invert
 scale_factor_xy = [scale_factor, -1*scale_factor]
 scale_factor_xyz = [scale_factor, -1*scale_factor, scale_factor]
