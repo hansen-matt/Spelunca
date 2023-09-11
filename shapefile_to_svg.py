@@ -100,41 +100,6 @@ try:
                             polygon = svg_document.polygon(points=offset_xy*inch, fill=hex_color) #, stroke='none', stroke_width=0.0*mm)
                             polygon_list.append( (min_depth, polygon) )
                             polygonz_count += 1
-                        else:
-                            print(f"points_xyz {points_xyz}")
-                            print(f"projected_xy {projected_xy}")
-                            print(f"scaled_xy {scaled_xy}")
-                    else:
-                        no_data_count += 1
-                        print(f"no data {no_data_count}")
-                        print(f"shape_record {shape_record}")
-                        print(f"geometry {geometry}")
-                        print(f"geometry.parts {geometry.parts}")
-                        print(f"geometry.parts[0] {geometry.parts[0]}")
-                        print(f"geometry.points {geometry.points}")
-                        print(f"geometry.points[0] {geometry.points[0]}")
-                        print(f"len(geometry.points) {len(geometry.points)}")
-                        print(f"part {part}")
-                        print(f"geometry.bbox {bbox}")
-                        print(f"geometry.points {geometry.points[part:part + geometry.parts[0]]}")
-                        print(f"points {points}")
-                        print(f"shapeType {geometry.shapeTypeName}")
-                        print("")
-
-            # Handle other geometry types (e.g., Point, LineString)
-            elif geometry.shapeType == shapefile.POINT:
-                if len(geometry.points[0]) >= 2 and None not in geometry.points[0][:2]:
-                    x, y = geometry.points[0][:2]  # Ignore the Z coordinate for points
-                    projected_x, projected_y = (x * scale_factor, y*scale_factor)
-                    svg_document.add(svg_document.circle(center=(projected_x, projected_y), r=2*mm, fill='red'))
-
-            elif geometry.shapeType == shapefile.POLYLINE:
-                points = geometry.points
-                # Extract only X and Y coordinates
-                xy_points = [(x * scale_factor , y * scale_factor ) for x, y, z in projector.transform(*zip(*points)) if x is not None and y is not None]
-                if xy_points:
-                    svg_document.add(svg_document.polyline(points=xy_points, fill='none', stroke='black', stroke_width=0.5*mm))
-
 
         polygon_list.sort(key=lambda a: a[0])
         for polygon_depth in polygon_list:
