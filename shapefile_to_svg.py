@@ -20,8 +20,16 @@ output_svg_path = 'madison.svg'
 # Create an SVG drawing
 svg_document = svgwrite.Drawing(output_svg_path, profile='tiny', size=(36*inch, 24*inch))
 inkscape = Inkscape(svg_document)
-layer = inkscape.layer(label="depth_color", locked=True)
-svg_document.add(layer)
+
+# Add a border
+border_layer = inkscape.layer(label="border", locked=True)
+svg_document.add(border_layer)
+border = svg_document.rect((0.5*inch,0.5*inch), (35*inch, 23*inch), fill='none', stroke='black', stroke_width=1*mm)
+border_layer.add(border)
+
+# Add a layer for the map
+map_layer = inkscape.layer(label="depth_map", locked=True)
+svg_document.add(map_layer)
 
 # Define the UTM projection suitable for your area of interest
 utm_zone = 17  # Modify this according to your area
@@ -104,10 +112,11 @@ try:
                             polygon_list.append( (min_depth, polygon) )
                             polygonz_count += 1
 
+
         polygon_list.sort(key=lambda a: a[0])
         for polygon_depth in polygon_list:
             polygon = polygon_depth[1]
-            svg_document.add(polygon)
+            map_layer.add(polygon)
 
 except shapefile.ShapefileException as e:
     print(f"Error processing shapefile: {str(e)}")
