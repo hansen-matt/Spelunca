@@ -76,8 +76,6 @@ try:
         #depth_norm = plt.Normalize(vmin=shp.zbox[0], vmax=shp.zbox[1])
         #depth_norm = plt.Normalize(vmin=shp.zbox[0], vmax=0)
         depth_norm = plt.Normalize(vmin=-130, vmax=0)
-        print(f"min depth={shp.zbox[0]}   max depth={shp.zbox[1]}")
-
 
         # Loop through shapefile records
         for shape_record in shp.iterShapeRecords():
