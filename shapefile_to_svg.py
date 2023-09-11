@@ -18,7 +18,7 @@ shapefile_prj_path = shapefile_path.replace("zip","prj");
 output_svg_path = 'madison.svg'
 
 # Create an SVG drawing
-svg_document = svgwrite.Drawing(output_svg_path, profile='full', size=(36*inch, 24*inch))
+svg_document = svgwrite.Drawing(output_svg_path, profile='tiny', size=(36*inch, 24*inch))
 inkscape = Inkscape(svg_document)
 layer = inkscape.layer(label="depth_color", locked=True)
 svg_document.add(layer)
@@ -31,7 +31,7 @@ outProj = pyproj.Proj(f"EPSG:326{utm_zone}")
 projector = pyproj.Transformer.from_proj(inProj, outProj)
 
 # Define the scale factor for 30 feet = 1 inch
-scale_factor = 12.0 / (12.0)  # Convert 30 feet to cm
+scale_factor = 12.0*2.54 / (30.0)  # Convert 30 feet to cm
 # y is north up, PNG is positive down, so invert
 scale_factor_xy = [scale_factor, -1*scale_factor]
 scale_factor_xyz = [scale_factor, -1*scale_factor, scale_factor]
@@ -61,13 +61,15 @@ try:
         transformed_bbox = [projector.transform(x, y) for x, y, z in bbox]
         scaled_bbox = np.multiply(transformed_bbox, scale_factor_xy)
         # get the min x, and what would have been the max y, because y is inverted with the scale factor so max is min
-        offset = [scaled_bbox[0][0] - 200, scaled_bbox[1][1] - 400]
+        offset = [scaled_bbox[0][0], scaled_bbox[1][1]]
 
         # colors for depth
         depth_color = plt.cm.Blues_r
         #depth_norm = plt.Normalize(vmin=shp.zbox[0], vmax=shp.zbox[1])
         #depth_norm = plt.Normalize(vmin=shp.zbox[0], vmax=0)
         depth_norm = plt.Normalize(vmin=-130, vmax=0)
+        print(f"min depth={shp.zbox[0]}   max depth={shp.zbox[1]}")
+
 
         # Loop through shapefile records
         for shape_record in shp.iterShapeRecords():
@@ -83,6 +85,7 @@ try:
                     points_xyz = [(x,y,z) for (x,y),z in zip(points_xy, points_z)]
 
                     projected_xy = [projector.transform(x, y) for x, y, z in points_xyz]
+                    #scaled_xy = [(x * scale_factor, y * scale_factor) for x, y in projected_xy]
                     scaled_xy = np.multiply(projected_xy, scale_factor_xy)
 
                     offset_xy = np.subtract(scaled_xy, offset)
@@ -97,7 +100,7 @@ try:
                             shallowest = max(shallowest, min_depth)
                             deepest = min(deepest, max_depth)
 
-                            polygon = svg_document.polygon(points=offset_xy*inch, fill=hex_color) #, stroke='none', stroke_width=0.0*mm)
+                            polygon = svg_document.polygon(points=offset_xy, fill=hex_color) #, stroke='none', stroke_width=0.0*mm)
                             polygon_list.append( (min_depth, polygon) )
                             polygonz_count += 1
 
