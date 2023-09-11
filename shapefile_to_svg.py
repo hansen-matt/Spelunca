@@ -69,7 +69,7 @@ try:
         transformed_bbox = [projector.transform(x, y) for x, y, z in bbox]
         scaled_bbox = np.multiply(transformed_bbox, scale_factor_xy)
         # get the min x, and what would have been the max y, because y is inverted with the scale factor so max is min
-        offset = [scaled_bbox[0][0], scaled_bbox[1][1]]
+        offset = [scaled_bbox[0][0] - 200, scaled_bbox[1][1] - 400]
 
         # colors for depth
         depth_color = plt.cm.Blues_r
