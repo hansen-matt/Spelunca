@@ -18,10 +18,13 @@ shapefile_prj_path_pot = shapefile_path_pot.replace("zip","prj");
 
 # Output SVG file path (update with your desired output file path)
 output_svg_path = 'madison.svg'
+output_svg_path_pot = 'pot_spring.svg'
 
 # Create an SVG drawing
 svg_document = svgwrite.Drawing(output_svg_path, profile='tiny', size=(36*inch, 24*inch))
+svg_document_pot = svgwrite.Drawing(output_svg_path_pot, profile='tiny', size=(36*inch, 24*inch))
 inkscape = Inkscape(svg_document)
+inkscape_pot = Inkscape(svg_document_pot)
 
 # Add a border
 border_layer = inkscape.layer(label="border", locked=True)
@@ -32,6 +35,9 @@ border_layer.add(border)
 # Add a layer for the map
 map_layer = inkscape.layer(label="depth_map", locked=True)
 svg_document.add(map_layer)
+
+map_layer_pot = inkscape.layer(label="depth_map", locked=True)
+svg_document_pot.add(map_layer_pot)
 
 # Define the UTM projection suitable for your area of interest
 utm_zone = 17  # Modify this according to your area
@@ -121,6 +127,8 @@ try:
 except shapefile.ShapefileException as e:
     print(f"Error processing shapefile: {str(e)}")
 
+polygon_list.clear()
+
 # Open the shapefile for reading
 try:
     with shapefile.Reader(shapefile_path_pot) as shp:
@@ -155,7 +163,7 @@ try:
                             shallowest = max(shallowest, min_depth)
                             deepest = min(deepest, max_depth)
 
-                            polygon = svg_document.polygon(points=offset_xy, fill=hex_color) #, stroke='none', stroke_width=0.0*mm)
+                            polygon = svg_document_pot.polygon(points=offset_xy, fill=hex_color) #, stroke='none', stroke_width=0.0*mm)
                             polygon_list.append( (min_depth, polygon) )
                             polygonz_count += 1
 
@@ -163,7 +171,7 @@ try:
         polygon_list.sort(key=lambda a: a[0])
         for polygon_depth in polygon_list:
             polygon = polygon_depth[1]
-            map_layer.add(polygon)
+            map_layer_pot.add(polygon)
 
 except shapefile.ShapefileException as e:
     print(f"Error processing shapefile: {str(e)}")
@@ -173,5 +181,6 @@ print(f"Maximum depth: {deepest}")
 print(f"polygonz count {polygonz_count}")
 # Save the SVG file
 svg_document.save()
+svg_document_pot.save()
 print(f"SVG file saved to {output_svg_path}")
 
