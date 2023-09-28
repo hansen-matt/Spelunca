@@ -12,7 +12,9 @@ import matplotlib.pyplot as plt
 
 # Input shapefile path (update with your file path)
 shapefile_path = 'input_3d/MBSP_3Dpas.zip'
+shapefile_path_pot = 'input_3d/PotSpring_3Dpas.zip'
 shapefile_prj_path = shapefile_path.replace("zip","prj");
+shapefile_prj_path_pot = shapefile_path_pot.replace("zip","prj");
 
 # Output SVG file path (update with your desired output file path)
 output_svg_path = 'madison.svg'
@@ -76,6 +78,53 @@ try:
         #depth_norm = plt.Normalize(vmin=shp.zbox[0], vmax=shp.zbox[1])
         #depth_norm = plt.Normalize(vmin=shp.zbox[0], vmax=0)
         depth_norm = plt.Normalize(vmin=-130, vmax=0)
+
+        # Loop through shapefile records
+        for shape_record in shp.iterShapeRecords():
+
+            # Extract the geometry
+            geometry = shape_record.shape
+
+            # Handle 3D polygons (shapefile.POLYGONZ) by ignoring the Z-coordinate
+            if geometry.shapeType == shapefile.POLYGONZ:
+                for part in geometry.parts:
+                    points_xy  = geometry.points #[part:part + geometry.parts[0]]
+                    points_z   = geometry.z
+                    points_xyz = [(x,y,z) for (x,y),z in zip(points_xy, points_z)]
+
+                    projected_xy = [projector.transform(x, y) for x, y, z in points_xyz]
+                    #scaled_xy = [(x * scale_factor, y * scale_factor) for x, y in projected_xy]
+                    scaled_xy = np.multiply(projected_xy, scale_factor_xy)
+
+                    offset_xy = np.subtract(scaled_xy, offset)
+
+                    if scaled_xy.all():
+                        if is_finite_list_of_tuples(scaled_xy):
+                            min_depth = np.min(points_z)
+                            avg_depth = np.mean(points_z)
+                            max_depth = np.max(points_z)
+                            fill_color = depth_color(depth_norm(min_depth))
+                            hex_color = rgb_to_hex(fill_color)
+                            shallowest = max(shallowest, min_depth)
+                            deepest = min(deepest, max_depth)
+
+                            polygon = svg_document.polygon(points=offset_xy, fill=hex_color) #, stroke='none', stroke_width=0.0*mm)
+                            polygon_list.append( (min_depth, polygon) )
+                            polygonz_count += 1
+
+
+        polygon_list.sort(key=lambda a: a[0])
+        for polygon_depth in polygon_list:
+            polygon = polygon_depth[1]
+            map_layer.add(polygon)
+
+except shapefile.ShapefileException as e:
+    print(f"Error processing shapefile: {str(e)}")
+
+# Open the shapefile for reading
+try:
+    with shapefile.Reader(shapefile_path_pot) as shp:
+        print(shp)
 
         # Loop through shapefile records
         for shape_record in shp.iterShapeRecords():
