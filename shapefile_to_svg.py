@@ -9,6 +9,16 @@ import array
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+import argparse
+
+# Argument parsing
+msg = "Generate SVG cave maps from 3d shapefiles exported by Compass"
+parser = argparse.ArgumentParser(description = msg)
+parser.add_argument("filename", help = "Set input 3d passage shapefile (.zip)")
+parser.add_argument("-i", "--inset", help = "Create an svg of a small region to use as an inset image")
+parser.add_argument("--min_depth", help = "Shallowest depth to include. More negative is deeper", default=float('inf'), type=float)
+parser.add_argument("--max_depth", help = "Deepest depth to include. More negative is deeper", default=-float('inf'), type=float)
+args = parser.parse_args()
 
 # Input shapefile path (update with your file path)
 shapefile_path = 'input_3d/MBSP_3Dpas.zip'
@@ -107,8 +117,12 @@ try:
                     if scaled_xy.all():
                         if is_finite_list_of_tuples(scaled_xy):
                             min_depth = np.min(points_z)
+                            if min_depth > args.min_depth:
+                                continue
                             avg_depth = np.mean(points_z)
                             max_depth = np.max(points_z)
+                            if max_depth < args.max_depth:
+                                continue
                             fill_color = depth_color(depth_norm(min_depth))
                             hex_color = rgb_to_hex(fill_color)
                             shallowest = max(shallowest, min_depth)
@@ -156,8 +170,12 @@ try:
                     if scaled_xy.all():
                         if is_finite_list_of_tuples(scaled_xy):
                             min_depth = np.min(points_z)
+                            if min_depth > args.min_depth:
+                                continue
                             avg_depth = np.mean(points_z)
                             max_depth = np.max(points_z)
+                            if max_depth < args.max_depth:
+                                continue
                             fill_color = depth_color(depth_norm(min_depth))
                             hex_color = rgb_to_hex(fill_color)
                             shallowest = max(shallowest, min_depth)
