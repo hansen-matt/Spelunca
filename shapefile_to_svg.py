@@ -32,7 +32,6 @@ args = parser.parse_args()
 
 # Input shapefile path (update with your file path)
 shapefile_path = args.filename
-shapefile_path_pot = 'input_3d/PotSpring_3Dpas.zip'
 
 if args.bounding_box:
     bbox_path = args.bounding_box
@@ -41,13 +40,10 @@ else:
 
 # Output SVG file path (update with your desired output file path)
 output_svg_path = args.output
-output_svg_path_pot = 'pot_spring.svg'
 
 # Create an SVG drawing
 svg_document = svgwrite.Drawing(output_svg_path, profile='tiny', size=(args.width*inch, args.height*inch))
-svg_document_pot = svgwrite.Drawing(output_svg_path_pot, profile='tiny', size=(args.width*inch, args.height*inch))
 inkscape = Inkscape(svg_document)
-inkscape_pot = Inkscape(svg_document_pot)
 
 # Add a border
 if args.border:
@@ -60,9 +56,6 @@ if args.border:
 # Add a layer for the map
 map_layer = inkscape.layer(label="depth_map", locked=True)
 svg_document.add(map_layer)
-
-map_layer_pot = inkscape.layer(label="depth_map", locked=True)
-svg_document_pot.add(map_layer_pot)
 
 ## Figure out the projection
 # First, unzip the zip file to a temp directory
@@ -197,23 +190,9 @@ try:
 except shapefile.ShapefileException as e:
     print(f"Error processing shapefile: {str(e)}")
 
-# Open the shapefile for reading
-try:
-    with shapefile.Reader(shapefile_path_pot) as shp:
-        print(shp)
-
-        polygon_list = make_polygon_list(shp, svg_document_pot)
-        for polygon_depth in polygon_list:
-            polygon = polygon_depth[1]
-            map_layer_pot.add(polygon)
-
-except shapefile.ShapefileException as e:
-    print(f"Error processing shapefile: {str(e)}")
-
 print(f"Minimum depth: {shallowest}")
 print(f"Maximum depth: {deepest}")
 # Save the SVG file
 svg_document.save()
-svg_document_pot.save()
 print(f"SVG file saved to {output_svg_path}")
 
