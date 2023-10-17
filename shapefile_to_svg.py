@@ -23,6 +23,7 @@ parser.add_argument("--min_depth", help = "Shallowest depth to include. More neg
 parser.add_argument("--max_depth", help = "Deepest depth to include. More negative is deeper", default=-float('inf'), type=float)
 parser.add_argument("-u", "--utm_zone", help = "UTM zone for map projection", default=17, type=int)
 parser.add_argument("-b", "--border", help="Add a border around the image", action='store_true')
+parser.add_argument("--border-offset", help="Offset from edge to border, in inches", default=0.5, type=float)
 parser.add_argument("--width", help="Width of image in inches", default=36, type=float)
 parser.add_argument("--height", help="Height of image in inches", default=24, type=float)
 args = parser.parse_args()
@@ -45,7 +46,7 @@ inkscape_pot = Inkscape(svg_document_pot)
 if args.border:
     border_layer = inkscape.layer(label="border", locked=True)
     svg_document.add(border_layer)
-    border_offset = 0.5
+    border_offset = args.border_offset
     border = svg_document.rect((border_offset*inch,border_offset*inch), ((args.width-2*border_offset)*inch, (args.height-2*border_offset)*inch), fill='none', stroke='black', stroke_width=1*mm)
     border_layer.add(border)
 
