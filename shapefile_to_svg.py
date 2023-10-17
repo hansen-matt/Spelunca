@@ -117,13 +117,13 @@ def should_make_polygon(offset_xy, points_z):
     min_depth = np.min(points_z)
     max_depth = np.max(points_z)
 
-    if np.min(x) > max_x:
+    if np.max(x) > max_x:
         return False
-    elif np.max(x) < min_x:
+    elif np.min(x) < min_x:
         return False
-    elif np.min(y) > max_y:
+    elif np.max(y) > max_y:
         return False
-    elif np.max(y) < min_y:
+    elif np.min(y) < min_y:
         return False
     
     if min_depth > args.min_depth:
