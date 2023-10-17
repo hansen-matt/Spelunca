@@ -68,6 +68,7 @@ shallowest = -10000;
 deepest = 0;
 polygon_list = [];
 
+# Functions to check if all the elements in a tuple are valid
 def is_finite_list_of_tuples(list_of_tuples):
   for tuple in list_of_tuples:
     for element in tuple:
@@ -75,12 +76,19 @@ def is_finite_list_of_tuples(list_of_tuples):
         return False
   return True
 
+def scaled_xy_is_good(scaled_xy):
+    return scaled_xy.all() and is_finite_list_of_tuples(scaled_xy)
+
+# Colormap related functions
 def rgb_to_hex(rgb):
     rgb = np.round( np.multiply(rgb, 256))
     return '#{:02x}{:02x}{:02x}'.format(int(rgb[0]), int(rgb[1]), int(rgb[2]))
 
-def scaled_xy_is_good(scaled_xy):
-    return scaled_xy.all() and is_finite_list_of_tuples(scaled_xy)
+def get_color(depth, depth_color, depth_norm):
+    fill_color = depth_color(depth_norm(depth))
+    hex_color = rgb_to_hex(fill_color)
+    return hex_color
+
     
 def should_make_polygon(points_z):
     min_depth = np.min(points_z)
@@ -98,13 +106,6 @@ def should_make_polygon(points_z):
         return False
     else:
         return True
-
-def get_color(depth, depth_color, depth_norm):
-    fill_color = depth_color(depth_norm(depth))
-    hex_color = rgb_to_hex(fill_color)
-    return hex_color
-
-
 
 def make_polygon(scaled_xy, offset, color, svg_document):
     offset_xy = np.subtract(scaled_xy, offset)
