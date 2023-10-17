@@ -60,9 +60,7 @@ projector = pyproj.Transformer.from_proj(inProj, outProj)
 scale_factor = 12.0*2.54 / (30.0)  # Convert 30 feet to cm
 # y is north up, PNG is positive down, so invert
 scale_factor_xy = [scale_factor, -1*scale_factor]
-scale_factor_xyz = [scale_factor, -1*scale_factor, scale_factor]
 
-no_data_count = -1
 shallowest = -10000;
 deepest = 0;
 
