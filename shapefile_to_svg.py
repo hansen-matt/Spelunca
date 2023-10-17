@@ -104,7 +104,7 @@ def make_polygon(scaled_xy, offset, color, svg_document):
     polygon = svg_document.polygon(points=offset_xy, fill=color) #, stroke='none', stroke_width=0.0*mm)
     return polygon
 
-def make_polygon_list(shp):
+def make_polygon_list(shp, svg_document):
     polygon_list = [];
     # Loop through shapefile records
     for shape_record in shp.iterShapeRecords():
@@ -163,7 +163,7 @@ try:
         depth_color = plt.cm.Blues_r
         depth_norm = plt.Normalize(vmin=10*math.floor(deepest/10), vmax=0)
 
-        polygon_list = make_polygon_list(shp)
+        polygon_list = make_polygon_list(shp, svg_document)
         for polygon_depth in polygon_list:
             polygon = polygon_depth[1]
             map_layer.add(polygon)
