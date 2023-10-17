@@ -135,7 +135,7 @@ try:
             # Extract the geometry
             geometry = shape_record.shape
 
-            # Handle 3D polygons (shapefile.POLYGONZ) by ignoring the Z-coordinate
+            # Handle 3D polygons (shapefile.POLYGONZ). Ignore the Z-coordinate for projection, but use it for color
             if geometry.shapeType == shapefile.POLYGONZ:
                 for part in geometry.parts:
                     points_xy  = geometry.points #[part:part + geometry.parts[0]]
