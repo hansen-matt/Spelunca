@@ -140,11 +140,10 @@ try:
                 for part in geometry.parts:
                     points_xy  = geometry.points #[part:part + geometry.parts[0]]
                     points_z   = geometry.z
-                    points_xyz = [(x,y,z) for (x,y),z in zip(points_xy, points_z)]
 
                     min_depth = np.min(points_z)
 
-                    projected_xy = [projector.transform(x, y) for x, y, z in points_xyz]
+                    projected_xy = [projector.transform(x, y) for x, y in points_xy]
                     scaled_xy = np.multiply(projected_xy, scale_factor_xy)
 
                     offset_xy = np.subtract(scaled_xy, offset)
