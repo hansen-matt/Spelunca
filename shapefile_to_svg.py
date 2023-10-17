@@ -45,7 +45,8 @@ inkscape_pot = Inkscape(svg_document_pot)
 if args.border:
     border_layer = inkscape.layer(label="border", locked=True)
     svg_document.add(border_layer)
-    border = svg_document.rect((0.5*inch,0.5*inch), (35*inch, 23*inch), fill='none', stroke='black', stroke_width=1*mm)
+    border_offset = 0.5
+    border = svg_document.rect((border_offset*inch,border_offset*inch), ((args.width-2*border_offset)*inch, (args.height-2*border_offset)*inch), fill='none', stroke='black', stroke_width=1*mm)
     border_layer.add(border)
 
 # Add a layer for the map
