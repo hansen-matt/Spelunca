@@ -18,6 +18,7 @@ import zipfile
 msg = "Generate SVG cave maps from 3d shapefiles exported by Compass"
 parser = argparse.ArgumentParser(description = msg)
 parser.add_argument("filename", nargs='?', help = "Set input 3d passage shapefile (.zip)", default="input_3d/MBSP_3Dpas.zip")
+parser.add_argument("--bounding_box", help = "Derive bounding box from a different shapefile. Useful for putting multiple caves on a single map")
 parser.add_argument("-i", "--inset", help = "Create an svg of a small region to use as an inset image")
 parser.add_argument("--min_depth", help = "Shallowest depth to include. More negative is deeper", default=float('inf'), type=float)
 parser.add_argument("--max_depth", help = "Deepest depth to include. More negative is deeper", default=-float('inf'), type=float)
@@ -31,6 +32,11 @@ args = parser.parse_args()
 # Input shapefile path (update with your file path)
 shapefile_path = args.filename
 shapefile_path_pot = 'input_3d/PotSpring_3Dpas.zip'
+
+if args.bounding_box:
+    bbox_path = args.bounding_box
+else:
+    bbox_path = shapefile_path
 
 # Output SVG file path (update with your desired output file path)
 output_svg_path = 'madison.svg'
@@ -160,11 +166,9 @@ def find_depth_limits(shp):
                 shallowest= max(shallowest, min_depth)
                 deepest = min(deepest, max_depth)
 
-# Open the shapefile for reading
+# Find the bounding box and offset
 try:
-    with shapefile.Reader(shapefile_path) as shp:
-        print(shp)
-
+    with shapefile.Reader(bbox_path) as shp:
         bbox = [(shp.bbox[0], shp.bbox[2], shp.zbox[0]), (shp.bbox[1], shp.bbox[3], shp.zbox[1])]
         transformed_bbox = [projector.transform(x, y) for x, y, z in bbox]
         scaled_bbox = np.multiply(transformed_bbox, scale_factor_xy)
@@ -175,6 +179,14 @@ try:
         find_depth_limits(shp)
         depth_color = plt.cm.Blues_r
         depth_norm = plt.Normalize(vmin=10*math.floor(deepest/10), vmax=0)
+
+except shapefile.ShapefileException as e:
+    print(f"Error processing shapefile: {str(e)}")
+
+# Process the passages in the shapefile into polygons
+try:
+    with shapefile.Reader(shapefile_path) as shp:
+        print(shp)
 
         polygon_list = make_polygon_list(shp, svg_document)
         for polygon_depth in polygon_list:
