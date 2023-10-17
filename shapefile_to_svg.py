@@ -62,7 +62,6 @@ scale_factor = 12.0*2.54 / (30.0)  # Convert 30 feet to cm
 scale_factor_xy = [scale_factor, -1*scale_factor]
 scale_factor_xyz = [scale_factor, -1*scale_factor, scale_factor]
 
-polygonz_count = -1 
 no_data_count = -1
 shallowest = -10000;
 deepest = 0;
@@ -154,7 +153,6 @@ try:
 
                             polygon = make_polygon(scaled_xy, offset, color, svg_document)
                             polygon_list.append( (min_depth, polygon) )
-                            polygonz_count += 1
 
 
         polygon_list.sort(key=lambda a: a[0])
@@ -207,7 +205,6 @@ try:
 
                             polygon = svg_document_pot.polygon(points=offset_xy, fill=hex_color) #, stroke='none', stroke_width=0.0*mm)
                             polygon_list.append( (min_depth, polygon) )
-                            polygonz_count += 1
 
 
         polygon_list.sort(key=lambda a: a[0])
@@ -220,7 +217,6 @@ except shapefile.ShapefileException as e:
 
 print(f"Minimum depth: {shallowest}")
 print(f"Maximum depth: {deepest}")
-print(f"polygonz count {polygonz_count}")
 # Save the SVG file
 svg_document.save()
 svg_document_pot.save()
