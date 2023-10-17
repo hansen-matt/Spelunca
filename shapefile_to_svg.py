@@ -22,6 +22,7 @@ parser.add_argument("-i", "--inset", help = "Create an svg of a small region to 
 parser.add_argument("--min_depth", help = "Shallowest depth to include. More negative is deeper", default=float('inf'), type=float)
 parser.add_argument("--max_depth", help = "Deepest depth to include. More negative is deeper", default=-float('inf'), type=float)
 parser.add_argument("-u", "--utm_zone", help = "UTM zone for map projection", default=17, type=int)
+parser.add_argument("-b", "--border", help="Add a border around the image", action='store_true')
 args = parser.parse_args()
 
 # Input shapefile path (update with your file path)
@@ -39,10 +40,11 @@ inkscape = Inkscape(svg_document)
 inkscape_pot = Inkscape(svg_document_pot)
 
 # Add a border
-border_layer = inkscape.layer(label="border", locked=True)
-svg_document.add(border_layer)
-border = svg_document.rect((0.5*inch,0.5*inch), (35*inch, 23*inch), fill='none', stroke='black', stroke_width=1*mm)
-border_layer.add(border)
+if args.border:
+    border_layer = inkscape.layer(label="border", locked=True)
+    svg_document.add(border_layer)
+    border = svg_document.rect((0.5*inch,0.5*inch), (35*inch, 23*inch), fill='none', stroke='black', stroke_width=1*mm)
+    border_layer.add(border)
 
 # Add a layer for the map
 map_layer = inkscape.layer(label="depth_map", locked=True)
