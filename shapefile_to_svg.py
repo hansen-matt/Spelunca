@@ -65,7 +65,6 @@ scale_factor_xyz = [scale_factor, -1*scale_factor, scale_factor]
 no_data_count = -1
 shallowest = -10000;
 deepest = 0;
-polygon_list = [];
 
 # Functions to check if all the elements in a tuple are valid
 def is_finite_list_of_tuples(list_of_tuples):
@@ -105,6 +104,36 @@ def make_polygon(scaled_xy, offset, color, svg_document):
     polygon = svg_document.polygon(points=offset_xy, fill=color) #, stroke='none', stroke_width=0.0*mm)
     return polygon
 
+def make_polygon_list(shp):
+    polygon_list = [];
+    # Loop through shapefile records
+    for shape_record in shp.iterShapeRecords():
+        # Extract the geometry
+        geometry = shape_record.shape
+
+        # Handle 3D polygons (shapefile.POLYGONZ). Ignore the Z-coordinate for projection, but use it for color
+        if geometry.shapeType == shapefile.POLYGONZ:
+            for part in geometry.parts:
+                points_xy  = geometry.points #[part:part + geometry.parts[0]]
+                points_z   = geometry.z
+
+                min_depth = np.min(points_z)
+
+                projected_xy = [projector.transform(x, y) for x, y in points_xy]
+                scaled_xy = np.multiply(projected_xy, scale_factor_xy)
+
+                offset_xy = np.subtract(scaled_xy, offset)
+
+                if scaled_xy_is_good(scaled_xy):
+                    if should_make_polygon(points_z):
+                        color = get_color(min_depth, depth_color, depth_norm)
+
+                        polygon = make_polygon(scaled_xy, offset, color, svg_document)
+                        polygon_list.append( (min_depth, polygon) )
+
+    polygon_list.sort(key=lambda a: a[0])
+    return polygon_list
+
 def find_depth_limits(shp):
     global shallowest
     global deepest
@@ -134,34 +163,7 @@ try:
         depth_color = plt.cm.Blues_r
         depth_norm = plt.Normalize(vmin=10*math.floor(deepest/10), vmax=0)
 
-        # Loop through shapefile records
-        for shape_record in shp.iterShapeRecords():
-
-            # Extract the geometry
-            geometry = shape_record.shape
-
-            # Handle 3D polygons (shapefile.POLYGONZ). Ignore the Z-coordinate for projection, but use it for color
-            if geometry.shapeType == shapefile.POLYGONZ:
-                for part in geometry.parts:
-                    points_xy  = geometry.points #[part:part + geometry.parts[0]]
-                    points_z   = geometry.z
-
-                    min_depth = np.min(points_z)
-
-                    projected_xy = [projector.transform(x, y) for x, y in points_xy]
-                    scaled_xy = np.multiply(projected_xy, scale_factor_xy)
-
-                    offset_xy = np.subtract(scaled_xy, offset)
-
-                    if scaled_xy_is_good(scaled_xy):
-                        if should_make_polygon(points_z):
-                            color = get_color(min_depth, depth_color, depth_norm)
-
-                            polygon = make_polygon(scaled_xy, offset, color, svg_document)
-                            polygon_list.append( (min_depth, polygon) )
-
-
-        polygon_list.sort(key=lambda a: a[0])
+        polygon_list = make_polygon_list(shp)
         for polygon_depth in polygon_list:
             polygon = polygon_depth[1]
             map_layer.add(polygon)
