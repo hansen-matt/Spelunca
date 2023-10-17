@@ -91,13 +91,7 @@ def get_color(depth, depth_color, depth_norm):
     
 def should_make_polygon(points_z):
     min_depth = np.min(points_z)
-    avg_depth = np.mean(points_z)
     max_depth = np.max(points_z)
-
-    global shallowest
-    global deepest
-    shallowest = max(shallowest, min_depth)
-    deepest = min(deepest, max_depth)
 
     if min_depth > args.min_depth:
         return False
@@ -111,6 +105,19 @@ def make_polygon(scaled_xy, offset, color, svg_document):
     polygon = svg_document.polygon(points=offset_xy, fill=color) #, stroke='none', stroke_width=0.0*mm)
     return polygon
 
+def find_depth_limits(shp):
+    global shallowest
+    global deepest
+    for shape_record in shp.iterShapeRecords():
+        geometry = shape_record.shape
+        if geometry.shapeType == shapefile.POLYGONZ:
+            for part in geometry.parts:
+                points_z = geometry.z
+                min_depth = np.min(points_z)
+                max_depth = np.max(points_z)
+                shallowest= max(shallowest, min_depth)
+                deepest = min(deepest, max_depth)
+
 # Open the shapefile for reading
 try:
     with shapefile.Reader(shapefile_path) as shp:
@@ -123,10 +130,9 @@ try:
         offset = [scaled_bbox[0][0] - 200, scaled_bbox[1][1] - 400]
 
         # colors for depth
+        find_depth_limits(shp)
         depth_color = plt.cm.Blues_r
-        #depth_norm = plt.Normalize(vmin=shp.zbox[0], vmax=shp.zbox[1])
-        #depth_norm = plt.Normalize(vmin=shp.zbox[0], vmax=0)
-        depth_norm = plt.Normalize(vmin=-130, vmax=0)
+        depth_norm = plt.Normalize(vmin=10*math.floor(deepest/10), vmax=0)
 
         # Loop through shapefile records
         for shape_record in shp.iterShapeRecords():
