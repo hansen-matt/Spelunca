@@ -10,6 +10,9 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 import argparse
+import os
+import tempfile
+import zipfile
 
 # Argument parsing
 msg = "Generate SVG cave maps from 3d shapefiles exported by Compass"
@@ -23,8 +26,6 @@ args = parser.parse_args()
 # Input shapefile path (update with your file path)
 shapefile_path = 'input_3d/MBSP_3Dpas.zip'
 shapefile_path_pot = 'input_3d/PotSpring_3Dpas.zip'
-shapefile_prj_path = shapefile_path.replace("zip","prj");
-shapefile_prj_path_pot = shapefile_path_pot.replace("zip","prj");
 
 # Output SVG file path (update with your desired output file path)
 output_svg_path = 'madison.svg'
@@ -49,9 +50,17 @@ svg_document.add(map_layer)
 map_layer_pot = inkscape.layer(label="depth_map", locked=True)
 svg_document_pot.add(map_layer_pot)
 
+## Figure out the projection
+# First, unzip the zip file to a temp directory
+temp_dir = tempfile.mkdtemp()
+with zipfile.ZipFile(shapefile_path, "r") as zip_file:
+    zip_file.extractall(temp_dir)
+basename = os.path.basename(shapefile_path)
+prj_path = temp_dir + "/" + basename.replace("zip","prj");
+
 # Define the UTM projection suitable for your area of interest
 utm_zone = 17  # Modify this according to your area
-with open(shapefile_prj_path ,'r') as f:
+with open(prj_path ,'r') as f:
         inProj = pyproj.Proj(f.read())
 outProj = pyproj.Proj(f"EPSG:326{utm_zone}")
 projector = pyproj.Transformer.from_proj(inProj, outProj)
