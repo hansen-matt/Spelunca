@@ -62,6 +62,12 @@ scale_factor = 12.0*2.54 / (30.0)  # Convert 30 feet to cm
 scale_factor_xy = [scale_factor, -1*scale_factor]
 scale_factor_xyz = [scale_factor, -1*scale_factor, scale_factor]
 
+polygonz_count = -1 
+no_data_count = -1
+shallowest = -10000;
+deepest = 0;
+polygon_list = [];
+
 def is_finite_list_of_tuples(list_of_tuples):
   for tuple in list_of_tuples:
     for element in tuple:
@@ -73,11 +79,38 @@ def rgb_to_hex(rgb):
     rgb = np.round( np.multiply(rgb, 256))
     return '#{:02x}{:02x}{:02x}'.format(int(rgb[0]), int(rgb[1]), int(rgb[2]))
 
-polygonz_count = -1 
-no_data_count = -1
-shallowest = -10000;
-deepest = 0;
-polygon_list = [];
+def scaled_xy_is_good(scaled_xy):
+    return scaled_xy.all() and is_finite_list_of_tuples(scaled_xy)
+    
+def should_make_polygon(points_z):
+    min_depth = np.min(points_z)
+    avg_depth = np.mean(points_z)
+    max_depth = np.max(points_z)
+
+    global shallowest
+    global deepest
+    shallowest = max(shallowest, min_depth)
+    deepest = min(deepest, max_depth)
+
+    if min_depth > args.min_depth:
+        return False
+    elif max_depth < args.max_depth:
+        return False
+    else:
+        return True
+
+def get_color(depth, depth_color, depth_norm):
+    fill_color = depth_color(depth_norm(depth))
+    hex_color = rgb_to_hex(fill_color)
+    return hex_color
+
+
+
+def make_polygon(scaled_xy, offset, color, svg_document):
+    offset_xy = np.subtract(scaled_xy, offset)
+    polygon = svg_document.polygon(points=offset_xy, fill=color) #, stroke='none', stroke_width=0.0*mm)
+    return polygon
+
 # Open the shapefile for reading
 try:
     with shapefile.Reader(shapefile_path) as shp:
@@ -108,27 +141,18 @@ try:
                     points_z   = geometry.z
                     points_xyz = [(x,y,z) for (x,y),z in zip(points_xy, points_z)]
 
+                    min_depth = np.min(points_z)
+
                     projected_xy = [projector.transform(x, y) for x, y, z in points_xyz]
-                    #scaled_xy = [(x * scale_factor, y * scale_factor) for x, y in projected_xy]
                     scaled_xy = np.multiply(projected_xy, scale_factor_xy)
 
                     offset_xy = np.subtract(scaled_xy, offset)
 
-                    if scaled_xy.all():
-                        if is_finite_list_of_tuples(scaled_xy):
-                            min_depth = np.min(points_z)
-                            if min_depth > args.min_depth:
-                                continue
-                            avg_depth = np.mean(points_z)
-                            max_depth = np.max(points_z)
-                            if max_depth < args.max_depth:
-                                continue
-                            fill_color = depth_color(depth_norm(min_depth))
-                            hex_color = rgb_to_hex(fill_color)
-                            shallowest = max(shallowest, min_depth)
-                            deepest = min(deepest, max_depth)
+                    if scaled_xy_is_good(scaled_xy):
+                        if should_make_polygon(points_z):
+                            color = get_color(min_depth, depth_color, depth_norm)
 
-                            polygon = svg_document.polygon(points=offset_xy, fill=hex_color) #, stroke='none', stroke_width=0.0*mm)
+                            polygon = make_polygon(scaled_xy, offset, color, svg_document)
                             polygon_list.append( (min_depth, polygon) )
                             polygonz_count += 1
 
