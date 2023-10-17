@@ -135,7 +135,6 @@ def should_make_polygon(offset_xy, points_z):
 
 def make_polygon(scaled_xy, offset, color, svg_document):
     offset_xy = np.subtract(scaled_xy, offset)
-    print(offset_xy)
     polygon = svg_document.polygon(points=offset_xy, fill=color) #, stroke='none', stroke_width=0.0*mm)
     return polygon
 
@@ -207,11 +206,6 @@ min_x = args.inset_x1 * args.width
 min_y = args.inset_y1 * args.height
 max_x = args.inset_x2 * args.width
 max_y = args.inset_y2 * args.height
-
-#min_x = 0
-#min_y = 0
-#max_x = 3400
-#max_y = 1500
 
 print(f"minx {min_x} min_y {min_y} maxx {max_x} maxy {max_y}")
 
