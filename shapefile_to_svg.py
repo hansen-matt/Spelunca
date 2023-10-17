@@ -100,7 +100,14 @@ def get_color(depth, depth_color, depth_norm):
     hex_color = rgb_to_hex(fill_color)
     return hex_color
 
-    
+def in_range(value, minimum, maximum):
+    if value < minimum:
+        return False
+    elif value > maximum:
+        return False
+    else:
+        return True
+
 def should_make_polygon(points_z):
     min_depth = np.min(points_z)
     max_depth = np.max(points_z)
