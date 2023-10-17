@@ -23,6 +23,8 @@ parser.add_argument("--min_depth", help = "Shallowest depth to include. More neg
 parser.add_argument("--max_depth", help = "Deepest depth to include. More negative is deeper", default=-float('inf'), type=float)
 parser.add_argument("-u", "--utm_zone", help = "UTM zone for map projection", default=17, type=int)
 parser.add_argument("-b", "--border", help="Add a border around the image", action='store_true')
+parser.add_argument("--width", help="Width of image in inches", default=36, type=float)
+parser.add_argument("--height", help="Height of image in inches", default=24, type=float)
 args = parser.parse_args()
 
 # Input shapefile path (update with your file path)
@@ -34,8 +36,8 @@ output_svg_path = 'madison.svg'
 output_svg_path_pot = 'pot_spring.svg'
 
 # Create an SVG drawing
-svg_document = svgwrite.Drawing(output_svg_path, profile='tiny', size=(36*inch, 24*inch))
-svg_document_pot = svgwrite.Drawing(output_svg_path_pot, profile='tiny', size=(36*inch, 24*inch))
+svg_document = svgwrite.Drawing(output_svg_path, profile='tiny', size=(args.width*inch, args.height*inch))
+svg_document_pot = svgwrite.Drawing(output_svg_path_pot, profile='tiny', size=(args.width*inch, args.height*inch))
 inkscape = Inkscape(svg_document)
 inkscape_pot = Inkscape(svg_document_pot)
 
