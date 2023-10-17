@@ -17,7 +17,7 @@ import zipfile
 # Argument parsing
 msg = "Generate SVG cave maps from 3d shapefiles exported by Compass"
 parser = argparse.ArgumentParser(description = msg)
-parser.add_argument("filename", help = "Set input 3d passage shapefile (.zip)")
+parser.add_argument("filename", nargs='?', help = "Set input 3d passage shapefile (.zip)", default="input_3d/MBSP_3Dpas.zip")
 parser.add_argument("-i", "--inset", help = "Create an svg of a small region to use as an inset image")
 parser.add_argument("--min_depth", help = "Shallowest depth to include. More negative is deeper", default=float('inf'), type=float)
 parser.add_argument("--max_depth", help = "Deepest depth to include. More negative is deeper", default=-float('inf'), type=float)
@@ -25,7 +25,7 @@ parser.add_argument("-u", "--utm_zone", help = "UTM zone for map projection", de
 args = parser.parse_args()
 
 # Input shapefile path (update with your file path)
-shapefile_path = 'input_3d/MBSP_3Dpas.zip'
+shapefile_path = args.filename
 shapefile_path_pot = 'input_3d/PotSpring_3Dpas.zip'
 
 # Output SVG file path (update with your desired output file path)
