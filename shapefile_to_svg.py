@@ -20,7 +20,10 @@ parser = argparse.ArgumentParser(description = msg)
 parser.add_argument("filename", nargs='?', help = "Set input 3d passage shapefile (.zip)", default="input_3d/MBSP_3Dpas.zip")
 parser.add_argument("-o", "--output", help = "Filename for the output image", default="output.svg")
 parser.add_argument("--bounding_box", help = "Derive bounding box from a different shapefile. Useful for putting multiple caves on a single map")
-parser.add_argument("-i", "--inset", help = "Create an svg of a small region to use as an inset image")
+parser.add_argument("--inset_x1", help = "Starting point for inset, expressed as a % of width (0-100)", default=0, type=float)
+parser.add_argument("--inset_x2", help = "Ending point for inset, expressed as a % of width (0-100)", default=100, type=float)
+parser.add_argument("--inset_y1", help = "Starting point for inset, expressed as a % of height (0-100)", default=0, type=float)
+parser.add_argument("--inset_y2", help = "Ending point for inset, expressed as a % of height (0-100)", default=100, type=float)
 parser.add_argument("--min_depth", help = "Shallowest depth to include. More negative is deeper", default=float('inf'), type=float)
 parser.add_argument("--max_depth", help = "Deepest depth to include. More negative is deeper", default=-float('inf'), type=float)
 parser.add_argument("-u", "--utm_zone", help = "UTM zone for map projection", default=17, type=int)
@@ -108,10 +111,21 @@ def in_range(value, minimum, maximum):
     else:
         return True
 
-def should_make_polygon(points_z):
+def should_make_polygon(offset_xy, points_z):
+    x = [x for x,y in offset_xy]
+    y = [y for x,y in offset_xy]
     min_depth = np.min(points_z)
     max_depth = np.max(points_z)
 
+    if np.min(x) > max_x:
+        return False
+    elif np.max(x) < min_x:
+        return False
+    elif np.min(y) > max_y:
+        return False
+    elif np.max(y) < min_y:
+        return False
+    
     if min_depth > args.min_depth:
         return False
     elif max_depth < args.max_depth:
@@ -121,6 +135,7 @@ def should_make_polygon(points_z):
 
 def make_polygon(scaled_xy, offset, color, svg_document):
     offset_xy = np.subtract(scaled_xy, offset)
+    print(offset_xy)
     polygon = svg_document.polygon(points=offset_xy, fill=color) #, stroke='none', stroke_width=0.0*mm)
     return polygon
 
@@ -145,7 +160,7 @@ def make_polygon_list(shp, svg_document):
                 offset_xy = np.subtract(scaled_xy, offset)
 
                 if scaled_xy_is_good(scaled_xy):
-                    if should_make_polygon(points_z):
+                    if should_make_polygon(offset_xy, points_z):
                         color = get_color(min_depth, depth_color, depth_norm)
 
                         polygon = make_polygon(scaled_xy, offset, color, svg_document)
@@ -173,8 +188,10 @@ try:
         bbox = [(shp.bbox[0], shp.bbox[2], shp.zbox[0]), (shp.bbox[1], shp.bbox[3], shp.zbox[1])]
         transformed_bbox = [projector.transform(x, y) for x, y, z in bbox]
         scaled_bbox = np.multiply(transformed_bbox, scale_factor_xy)
+        print(scaled_bbox)
         # get the min x, and what would have been the max y, because y is inverted with the scale factor so max is min
         offset = [scaled_bbox[0][0] - 200, scaled_bbox[1][1] - 400]
+        print(offset)
 
         # colors for depth
         find_depth_limits(shp)
@@ -183,6 +200,20 @@ try:
 
 except shapefile.ShapefileException as e:
     print(f"Error processing shapefile: {str(e)}")
+
+# Set limits for x,y
+
+min_x = args.inset_x1 * args.width
+min_y = args.inset_y1 * args.height
+max_x = args.inset_x2 * args.width
+max_y = args.inset_y2 * args.height
+
+#min_x = 0
+#min_y = 0
+#max_x = 3400
+#max_y = 1500
+
+print(f"minx {min_x} min_y {min_y} maxx {max_x} maxy {max_y}")
 
 # Process the passages in the shapefile into polygons
 try:
