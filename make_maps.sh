@@ -8,5 +8,5 @@ python3 ./shapefile_to_svg.py -o pot_spring.svg --bounding_box input_3d/MBSP_3Dp
 echo ""
 
 echo "Making Cavern inset"
-python3 ./shapefile_to_svg.py -o madison_inset.svg --inset_x1 45 --inset_x2 55 --inset_y1 25 --inset_y2 38 --max_depth -90 input_3d/MBSP_3Dpas.zip
+python3 ./shapefile_to_svg.py -o madison_inset.svg --inset_x1 47 --inset_x2 65 --inset_y1 23 --inset_y2 40 --max_depth -100 input_3d/MBSP_3Dpas.zip
 echo ""
