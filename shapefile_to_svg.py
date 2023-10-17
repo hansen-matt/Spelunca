@@ -21,6 +21,7 @@ parser.add_argument("filename", help = "Set input 3d passage shapefile (.zip)")
 parser.add_argument("-i", "--inset", help = "Create an svg of a small region to use as an inset image")
 parser.add_argument("--min_depth", help = "Shallowest depth to include. More negative is deeper", default=float('inf'), type=float)
 parser.add_argument("--max_depth", help = "Deepest depth to include. More negative is deeper", default=-float('inf'), type=float)
+parser.add_argument("-u", "--utm_zone", help = "UTM zone for map projection", default=17, type=int)
 args = parser.parse_args()
 
 # Input shapefile path (update with your file path)
@@ -59,10 +60,9 @@ basename = os.path.basename(shapefile_path)
 prj_path = temp_dir + "/" + basename.replace("zip","prj");
 
 # Define the UTM projection suitable for your area of interest
-utm_zone = 17  # Modify this according to your area
 with open(prj_path ,'r') as f:
         inProj = pyproj.Proj(f.read())
-outProj = pyproj.Proj(f"EPSG:326{utm_zone}")
+outProj = pyproj.Proj(f"EPSG:326{args.utm_zone}")
 projector = pyproj.Transformer.from_proj(inProj, outProj)
 
 # Define the scale factor for 30 feet = 1 inch
