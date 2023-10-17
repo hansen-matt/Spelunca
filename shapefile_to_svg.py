@@ -61,8 +61,8 @@ scale_factor = 12.0*2.54 / (30.0)  # Convert 30 feet to cm
 # y is north up, PNG is positive down, so invert
 scale_factor_xy = [scale_factor, -1*scale_factor]
 
-shallowest = -10000;
-deepest = 0;
+shallowest = -float('inf');
+deepest = float('inf');
 
 # Functions to check if all the elements in a tuple are valid
 def is_finite_list_of_tuples(list_of_tuples):
