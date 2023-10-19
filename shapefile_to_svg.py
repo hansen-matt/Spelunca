@@ -31,6 +31,7 @@ parser.add_argument("-b", "--border", help="Add a border around the image", acti
 parser.add_argument("--border-offset", help="Offset from edge to border, in inches", default=0.5, type=float)
 parser.add_argument("--width", help="Width of image in inches", default=36, type=float)
 parser.add_argument("--height", help="Height of image in inches", default=24, type=float)
+parser.add_argument("--depth_scale", help="Output a depth scale gradient", action='store_true')
 args = parser.parse_args()
 
 # Input shapefile path (update with your file path)
@@ -133,6 +134,12 @@ def should_make_polygon(offset_xy, points_z):
     else:
         return True
 
+def make_depth_scale(svg_document):
+    offset_xy = [[0, 0], [0, 100], [1000, 100], [1000, 0], [0, 0]]
+    color = "#FF0000"
+    polygon = svg_document.polygon(points=offset_xy, fill=color) #, stroke='none', stroke_width=0.0*mm)
+    map_layer.add(polygon)
+
 def make_polygon(offset_xy, color, svg_document):
     polygon = svg_document.polygon(points=offset_xy, fill=color) #, stroke='none', stroke_width=0.0*mm)
     return polygon
@@ -208,18 +215,21 @@ max_y = args.inset_y2 * args.height
 
 print(f"minx {min_x} min_y {min_y} maxx {max_x} maxy {max_y}")
 
-# Process the passages in the shapefile into polygons
-try:
-    with shapefile.Reader(shapefile_path) as shp:
-        print(shp)
+if args.depth_scale:
+    make_depth_scale(svg_document)
+else:
+    # Process the passages in the shapefile into polygons
+    try:
+        with shapefile.Reader(shapefile_path) as shp:
+            print(shp)
 
-        polygon_list = make_polygon_list(shp, svg_document)
-        for polygon_depth in polygon_list:
-            polygon = polygon_depth[1]
-            map_layer.add(polygon)
-
-except shapefile.ShapefileException as e:
-    print(f"Error processing shapefile: {str(e)}")
+            polygon_list = make_polygon_list(shp, svg_document)
+            for polygon_depth in polygon_list:
+                polygon = polygon_depth[1]
+                map_layer.add(polygon)
+    
+    except shapefile.ShapefileException as e:
+        print(f"Error processing shapefile: {str(e)}")
 
 print(f"Minimum depth: {shallowest}")
 print(f"Maximum depth: {deepest}")

@@ -10,3 +10,7 @@ echo ""
 echo "Making Cavern inset"
 python3 ./shapefile_to_svg.py -o madison_inset.svg --inset_x1 47 --inset_x2 65 --inset_y1 23 --inset_y2 40 --max_depth -100 input_3d/MBSP_3Dpas.zip
 echo ""
+
+echo "Making depth scale"
+python3 ./shapefile_to_svg.py -o depth_scale.svg --depth_scale input_3d/MBSP_3Dpas.zip
+echo ""
