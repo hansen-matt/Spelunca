@@ -134,11 +134,15 @@ def should_make_polygon(offset_xy, points_z):
     else:
         return True
 
-def make_depth_scale(svg_document):
-    offset_xy = [[0, 0], [0, 100], [1000, 100], [1000, 0], [0, 0]]
-    color = "#FF0000"
-    polygon = svg_document.polygon(points=offset_xy, fill=color) #, stroke='none', stroke_width=0.0*mm)
-    map_layer.add(polygon)
+def make_depth_scale(svg_document, min_depth, max_depth):
+    depth_step = (max_depth - min_depth)/1000
+    print(depth_step)
+    for x in range(0, 1000):
+        offset_xy = [[x, 0], [x, 100], [x+2, 100], [x+2, 0], [x, 0]]
+        depth = min_depth + x*depth_step
+        color = get_color(depth, depth_color, depth_norm)
+        polygon = svg_document.polygon(points=offset_xy, fill=color) #, stroke='none', stroke_width=0.0*mm)
+        map_layer.add(polygon)
 
 def make_polygon(offset_xy, color, svg_document):
     polygon = svg_document.polygon(points=offset_xy, fill=color) #, stroke='none', stroke_width=0.0*mm)
@@ -216,7 +220,7 @@ max_y = args.inset_y2 * args.height
 print(f"minx {min_x} min_y {min_y} maxx {max_x} maxy {max_y}")
 
 if args.depth_scale:
-    make_depth_scale(svg_document)
+    make_depth_scale(svg_document, shallowest, deepest)
 else:
     # Process the passages in the shapefile into polygons
     try:
