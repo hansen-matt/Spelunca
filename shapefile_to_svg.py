@@ -197,10 +197,8 @@ try:
         bbox = [(shp.bbox[0], shp.bbox[2], shp.zbox[0]), (shp.bbox[1], shp.bbox[3], shp.zbox[1])]
         transformed_bbox = [projector.transform(x, y) for x, y, z in bbox]
         scaled_bbox = np.multiply(transformed_bbox, scale_factor_xy)
-        print(scaled_bbox)
         # get the min x, and what would have been the max y, because y is inverted with the scale factor so max is min
         offset = [scaled_bbox[0][0] - 200, scaled_bbox[1][1] - 400]
-        print(offset)
 
         # colors for depth
         find_depth_limits(shp)
