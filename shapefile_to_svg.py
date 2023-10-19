@@ -133,8 +133,7 @@ def should_make_polygon(offset_xy, points_z):
     else:
         return True
 
-def make_polygon(scaled_xy, offset, color, svg_document):
-    offset_xy = np.subtract(scaled_xy, offset)
+def make_polygon(offset_xy, color, svg_document):
     polygon = svg_document.polygon(points=offset_xy, fill=color) #, stroke='none', stroke_width=0.0*mm)
     return polygon
 
@@ -162,7 +161,7 @@ def make_polygon_list(shp, svg_document):
                     if should_make_polygon(offset_xy, points_z):
                         color = get_color(min_depth, depth_color, depth_norm)
 
-                        polygon = make_polygon(scaled_xy, offset, color, svg_document)
+                        polygon = make_polygon(offset_xy, color, svg_document)
                         polygon_list.append( (min_depth, polygon) )
 
     polygon_list.sort(key=lambda a: a[0])
