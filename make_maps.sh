@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Making Madison map"
-python3 ./shapefile_to_svg.py -o madison.svg -b input_3d/MBSP_3Dpas.zip
+python3 ./shapefile_to_svg.py -o madison.svg input_3d/MBSP_3Dpas.zip
 echo ""
 
 echo "Making Pot Spring map"
