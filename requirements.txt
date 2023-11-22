@@ -1,0 +1,6 @@
+fiona
+pyshp
+svgwrite
+pyproj
+matplotlib
+git+https://github.com/orsinium-labs/svg.py.git@9b8ce433c8d150c5be48d08dbbedadf71bf86b21
