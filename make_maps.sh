@@ -19,3 +19,6 @@ echo "Making M2 map"
 python3 ./shapefile_to_svg.py -o M2.svg 'input_3d/M2 Blue Cave_3Dpas.zip'
 echo ""
 
+echo "Making Manatee map"
+python3 ./shapefile_to_svg.py -o Manatee.svg 'input_3d/Manatee_3Dpas.zip'
+echo ""
