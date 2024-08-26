@@ -22,3 +22,7 @@ echo ""
 echo "Making Manatee map"
 python3 ./shapefile_to_svg.py -o Manatee.svg 'input_3d/Manatee_3Dpas.zip'
 echo ""
+
+echo "Making Manatee depth scale"
+python3 ./shapefile_to_svg.py -o Manatee_depth_scale.svg --depth_scale input_3d/Manatee_3Dpas.zip
+echo ""
