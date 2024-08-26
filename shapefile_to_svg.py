@@ -96,7 +96,7 @@ def scaled_xy_is_good(scaled_xy):
 
 # Colormap related functions
 def rgb_to_hex(rgb):
-    rgb = np.round( np.multiply(rgb, 256))
+    rgb = np.round( np.multiply(rgb, 255))
     return '#{:02x}{:02x}{:02x}'.format(int(rgb[0]), int(rgb[1]), int(rgb[2]))
 
 def get_color(depth, depth_color, depth_norm):
