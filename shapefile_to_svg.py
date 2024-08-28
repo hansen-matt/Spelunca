@@ -153,7 +153,7 @@ def should_make_polygon(offset_xy, points_z):
 
 def make_depth_scale(svg_document, min_depth, max_depth):
     depth_step = (max_depth - min_depth)/1000
-    print(depth_step)
+    print("depth step:", depth_step)
     for x in range(0, 1000):
         offset_xy = [[x, 0], [x, 100], [x+2, 100], [x+2, 0], [x, 0]]
         depth = min_depth + x*depth_step
