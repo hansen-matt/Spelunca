@@ -16,7 +16,7 @@ python3 ./shapefile_to_svg.py -o depth_scale.svg --depth_scale input_3d/MBSP_3Dp
 echo ""
 
 echo "Making M2 map"
-python3 ./shapefile_to_svg.py -o M2.svg 'input_3d/M2 Blue Cave_3Dpas.zip'
+python3 ./shapefile_to_svg.py -o M2.svg 'input_3d/M2 Blue Cave_3Dpas.zip' --width=24 --height=36
 echo ""
 
 echo "Making Manatee map"
