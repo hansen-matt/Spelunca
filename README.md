@@ -7,7 +7,7 @@ Tools and data for the Madison map.
 Using Ubuntu 24.04:
 
 ```
-sudo apt install python3-fiona python3 pyshp python3-svgwrite python3-pyproj python3-matplotlib
+sudo apt install python3-fiona python3-pyshp python3-svgwrite python3-pyproj python3-matplotlib
 ```
 
 ## Using this code
