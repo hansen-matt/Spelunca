@@ -160,7 +160,7 @@ def make_polygon(offset_xy, color, svg_document):
     polygon = svg_document.polygon(points=offset_xy, fill=color) #, stroke='none', stroke_width=0.0*mm)
     return polygon
 
-def make_polygon_list(shp, svg_document):
+def make_polygon_list(shp):
     polygon_list = [];
     # Loop through shapefile records
     for shape_record in shp.iterShapeRecords():
@@ -180,12 +180,20 @@ def make_polygon_list(shp, svg_document):
 
                 offset_xy = np.subtract(scaled_xy, offset)
 
+                start_xy = projected_xy[0] #todo avg with [1]
+                end_xy   = projected_xy[2]
+                start_depth = points_z[0]
+                end_depth   = points_z[2]
+
                 if scaled_xy_is_good(scaled_xy):
                     if should_make_polygon(offset_xy, points_z):
+
                         color = get_color(min_depth, depth_color, depth_norm)
+                        gradient = get_gradient(start_xy, start_depth, end_xy, end_depth, depth_color, depth_norm)
+#                        gradient = svg_document.add(gradient)
 
                         polygon = make_polygon(offset_xy, color, svg_document)
-                        polygon_list.append( (min_depth, polygon) )
+                        polygon_list.append( (min_depth, polygon, gradient) )
 
     polygon_list.sort(key=lambda a: a[0])
     return polygon_list
@@ -237,9 +245,13 @@ else:
         with shapefile.Reader(shapefile_path) as shp:
             print(shp)
 
-            polygon_list = make_polygon_list(shp, svg_document)
+            polygon_list = make_polygon_list(shp)
+
             for polygon_depth in polygon_list:
                 polygon = polygon_depth[1]
+                gradient = polygon_depth[2]
+                gradient = map_layer.add(gradient)
+                polygon.fill(gradient)
                 map_layer.add(polygon)
     
     except shapefile.ShapefileException as e:
