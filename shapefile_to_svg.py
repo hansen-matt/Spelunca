@@ -104,6 +104,18 @@ def get_color(depth, depth_color, depth_norm):
     hex_color = rgb_to_hex(fill_color)
     return hex_color
 
+def get_gradient(start_xy, start_depth, stop_xy, stop_depth, depth_color, depth_norm):
+    start_color = get_color(start_depth, depth_color, depth_norm)
+    stop_color  = get_color(stop_depth , depth_color, depth_norm)
+
+    gradient = svgwrite.gradients.LinearGradient(start_xy, stop_xy)
+    gradient.spreadMethod = 'pad'
+
+    gradient.add_stop_color(0.0, start_color)
+    gradient.add_stop_color(1.0, stop_color)
+
+    return gradient
+
 def in_range(value, minimum, maximum):
     if value < minimum:
         return False
