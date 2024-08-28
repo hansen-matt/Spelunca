@@ -106,17 +106,31 @@ def get_color(depth, depth_color, depth_norm):
 
 def get_gradient(start_xy, start_depth, stop_xy, stop_depth, depth_color, depth_norm):
     start_color = get_color(start_depth, depth_color, depth_norm)
-    red = '#FF0000'
     stop_color  = get_color(stop_depth , depth_color, depth_norm)
+    red = '#FF0000'
     green  = '#00FF00'
     yellow = '#FFFF00'
     cyan   = '#00FFFF'
 
-    gradient = svgwrite.gradients.LinearGradient(start_xy-start_xy, stop_xy-start_xy)
+    minx = min( start_xy[0], stop_xy[0] )
+    miny = min( start_xy[1], stop_xy[1] )
+    mins = (minx, miny)
+
+    maxx = max( start_xy[0], stop_xy[0] )
+    maxy = max( start_xy[1], stop_xy[1] )
+    maxs = (maxx, maxy)
+
+    dims = np.subtract(maxs, mins)
+
+    start = np.divide(np.subtract(start_xy, mins), dims)
+    stop  = np.divide(np.subtract(stop_xy, mins), dims)
+
+    #gradient = svgwrite.gradients.LinearGradient(start_xy-start_xy, stop_xy-start_xy)
+    gradient = svgwrite.gradients.LinearGradient(start, stop)
     gradient.spreadMethod = 'pad'
+    gradient.gradientUnits = 'objectBoundingBox'
 
     gradient.add_stop_color(0.0, start_color)
-    gradient.add_stop_color(0.3, red)
     gradient.add_stop_color(1.0, stop_color)
 
     return gradient
