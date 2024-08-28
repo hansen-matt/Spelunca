@@ -107,10 +107,6 @@ def get_color(depth, depth_color, depth_norm):
 def get_gradient(start_xy, start_depth, stop_xy, stop_depth, depth_color, depth_norm):
     start_color = get_color(start_depth, depth_color, depth_norm)
     stop_color  = get_color(stop_depth , depth_color, depth_norm)
-    red = '#FF0000'
-    green  = '#00FF00'
-    yellow = '#FFFF00'
-    cyan   = '#00FFFF'
 
     minx = min( start_xy[0], stop_xy[0] )
     miny = min( start_xy[1], stop_xy[1] )
@@ -125,7 +121,6 @@ def get_gradient(start_xy, start_depth, stop_xy, stop_depth, depth_color, depth_
     start = np.divide(np.subtract(start_xy, mins), dims)
     stop  = np.divide(np.subtract(stop_xy, mins), dims)
 
-    #gradient = svgwrite.gradients.LinearGradient(start_xy-start_xy, stop_xy-start_xy)
     gradient = svgwrite.gradients.LinearGradient(start, stop)
     gradient.spreadMethod = 'pad'
     gradient.gradientUnits = 'objectBoundingBox'
@@ -199,11 +194,10 @@ def make_polygon_list(shp):
 
                 offset_xy = np.subtract(scaled_xy, offset)
 
-                start_xy = (offset_xy[0]+offset_xy[3])/2 #todo avg with [1]
-                end_xy   = (offset_xy[1]+offset_xy[2])/2
+                start_xy = np.divide(np.add(offset_xy[0], offset_xy[3]),2)
+                end_xy   = np.divide(np.add(offset_xy[1], offset_xy[2]),2)
                 start_depth = (points_z[0]+points_z[3])/2
                 end_depth   = (points_z[1]+points_z[2])/2
-                #print("start: " , start_depth , " end: " , end_depth)
 
                 if scaled_xy_is_good(scaled_xy):
                     if should_make_polygon(offset_xy, points_z):
