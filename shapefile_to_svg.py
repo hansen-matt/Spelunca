@@ -106,6 +106,7 @@ def get_color(depth, depth_color, depth_norm):
 
 def get_gradient(start_xy, start_depth, stop_xy, stop_depth, depth_color, depth_norm):
     start_color = get_color(start_depth, depth_color, depth_norm)
+    start_color = '#FF0000'
     stop_color  = get_color(stop_depth , depth_color, depth_norm)
 
     gradient = svgwrite.gradients.LinearGradient(start_xy, stop_xy)
