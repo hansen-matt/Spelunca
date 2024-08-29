@@ -17,7 +17,7 @@ echo ""
 
 echo "Making Pot Spring map"
 mkdir -p $OUTPUT_PATH/pot
-python3 ./shapefile_to_svg.py -o $OUTPUT_PATH/pot/map.svg --bounding_box $INPUT_PATH/MBSP_3Dpas.zip input_3d/PotSpring_3Dpas.zip
+python3 ./shapefile_to_svg.py -o $OUTPUT_PATH/pot/map.svg --bounding_box $INPUT_PATH/MBSP_3Dpas.zip $INPUT_PATH/PotSpring_3Dpas.zip
 echo ""
 
 echo "Making M2 map"
