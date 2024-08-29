@@ -167,7 +167,6 @@ def should_make_polygon(offset_xy, points_z):
 
 def make_depth_scale(svg_document, min_depth, max_depth):
     depth_step = (max_depth - min_depth)/1000
-    print("depth step:", depth_step)
     for x in range(0, 1000):
         offset_xy = [[x, 0], [x, 100], [x+2, 100], [x+2, 0], [x, 0]]
         depth = min_depth + x*depth_step
@@ -253,16 +252,12 @@ min_y = args.inset_y1 * args.height
 max_x = args.inset_x2 * args.width
 max_y = args.inset_y2 * args.height
 
-print(f"minx {min_x} min_y {min_y} maxx {max_x} maxy {max_y}")
-
 if args.depth_scale:
     make_depth_scale(svg_document, shallowest, deepest)
 else:
     # Process the passages in the shapefile into polygons
     try:
         with shapefile.Reader(shapefile_path) as shp:
-            print(shp)
-
             polygon_list = make_polygon_list(shp)
 
             for polygon_depth in polygon_list:
@@ -275,8 +270,7 @@ else:
     except shapefile.ShapefileException as e:
         print(f"Error processing shapefile: {str(e)}")
 
-print(f"Minimum depth: {shallowest}")
-print(f"Maximum depth: {deepest}")
+print(f"Depth range: {shallowest} to {deepest}")
 # Save the SVG file
 svg_document.save()
 print(f"SVG file saved to {output_svg_path}")
