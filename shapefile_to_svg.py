@@ -120,6 +120,8 @@ def get_gradient(start_xy, start_depth, stop_xy, stop_depth, depth_color, depth_
     maxs = (maxx, maxy)
 
     dims = np.subtract(maxs, mins)
+    if max(dims) <= 0.001: # avoid divide by zero warnings
+        dims = (0.001, 0.001)
 
     start = np.divide(np.subtract(start_xy, mins), dims)
     stop  = np.divide(np.subtract(stop_xy, mins), dims)
