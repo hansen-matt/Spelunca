@@ -1,6 +1,6 @@
-# Madison Project
+# Spelunca Cave Maps
 
-Tools and data for the Madison map.
+This tool converts 3d shapefiles exported from Fountainware's Compass program into beautiful cave maps, colored by depth and in a SVG format for effortless rescaling.
 
 ## Python requirements
 
@@ -12,7 +12,7 @@ sudo apt install python3-fiona python3-pyshp python3-svgwrite python3-pyproj pyt
 
 ## Using this code
 
-This project is not limited to making maps of Madison - it works with any cave, with some work. The basic workflow is:
+This project works with any cave, with a little  work. The basic workflow is:
 - Open the survey project in Compass and generate the plot
 - From the plot, export a 3d shapefile, and make sure the "make zip" option is checked
 - Add the zip file to the input_3d folder here
