@@ -1,28 +1,35 @@
 #!/bin/bash
+INPUT_PATH="../cave_maps/input_3d"
+OUTPUT_PATH="../cave_maps/output"
+
 echo "Making Madison map"
-python3 ./shapefile_to_svg.py -o madison.svg input_3d/MBSP_3Dpas.zip
+mkdir -p $OUTPUT_PATH/madison
+python3 ./shapefile_to_svg.py -o $OUTPUT_PATH/madison/map.svg $INPUT_PATH/MBSP_3Dpas.zip
 echo ""
 
-echo "Making Pot Spring map"
-python3 ./shapefile_to_svg.py -o pot_spring.svg --bounding_box input_3d/MBSP_3Dpas.zip input_3d/PotSpring_3Dpas.zip
-echo ""
-
-echo "Making Cavern inset"
-python3 ./shapefile_to_svg.py -o madison_inset.svg --inset_x1 47 --inset_x2 65 --inset_y1 23 --inset_y2 40 --max_depth -100 input_3d/MBSP_3Dpas.zip
+echo "Making Madison cavern inset"
+python3 ./shapefile_to_svg.py -o $OUTPUT_PATH/madison/cavern_inset.svg --inset_x1 47 --inset_x2 65 --inset_y1 23 --inset_y2 40 --max_depth -100 $INPUT_PATH/MBSP_3Dpas.zip
 echo ""
 
 echo "Making Madison depth scale"
-python3 ./shapefile_to_svg.py -o depth_scale.svg --depth_scale input_3d/MBSP_3Dpas.zip
+python3 ./shapefile_to_svg.py -o $OUTPUT_PATH/madison/depth_scale.svg --depth_scale $INPUT_PATH/MBSP_3Dpas.zip
+echo ""
+
+echo "Making Pot Spring map"
+mkdir -p $OUTPUT_PATH/pot
+python3 ./shapefile_to_svg.py -o $OUTPUT_PATH/pot/map.svg --bounding_box $INPUT_PATH/MBSP_3Dpas.zip input_3d/PotSpring_3Dpas.zip
 echo ""
 
 echo "Making M2 map"
-python3 ./shapefile_to_svg.py -o M2.svg 'input_3d/M2 Blue Cave_3Dpas.zip' --width=24 --height=36
+mkdir -p $OUTPUT_PATH/m2
+python3 ./shapefile_to_svg.py -o $OUTPUT_PATH/m2/map.svg $INPUT_PATH/'M2 Blue Cave_3Dpas.zip' --width=24 --height=36
 echo ""
 
 echo "Making Manatee map"
-python3 ./shapefile_to_svg.py -o Manatee.svg 'input_3d/Manatee_3Dpas.zip'
+mkdir -p $OUTPUT_PATH/manatee
+python3 ./shapefile_to_svg.py -o $OUTPUT_PATH/manatee/map.svg $INPUT_PATH/Manatee_3Dpas.zip
 echo ""
 
 echo "Making Manatee depth scale"
-python3 ./shapefile_to_svg.py -o Manatee_depth_scale.svg --depth_scale input_3d/Manatee_3Dpas.zip
+python3 ./shapefile_to_svg.py -o $OUTPUT_PATH/manatee/depth_scale.svg --depth_scale $INPUT_PATH/Manatee_3Dpas.zip
 echo ""
