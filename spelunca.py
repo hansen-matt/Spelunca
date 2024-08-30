@@ -28,6 +28,7 @@ parser.add_argument("--min_depth", help = "Shallowest depth to include. More neg
 parser.add_argument("--max_depth", help = "Deepest depth to include. More negative is deeper", default=-float('inf'), type=float)
 parser.add_argument("-u", "--utm_zone", help = "UTM zone for map projection", default=17, type=int)
 parser.add_argument("-b", "--border", help="Add a border around the image", action='store_true')
+parser.add_argument("-r", "--rainbow", help="Use an exaggerated color scale for depth", action='store_true')
 parser.add_argument("--border-offset", help="Offset from edge to border, in inches", default=0.5, type=float)
 parser.add_argument("--width", help="Width of image in inches", default=36, type=float)
 parser.add_argument("--height", help="Height of image in inches", default=24, type=float)
@@ -44,6 +45,12 @@ if args.bounding_box:
     bbox_path = args.bounding_box
 else:
     bbox_path = shapefile_path
+
+# colors for depth
+if args.rainbow:
+    depth_color = plt.cm.gist_rainbow_r
+else:
+    depth_color = plt.cm.Blues_r
 
 # Output SVG file path (update with your desired output file path)
 output_svg_path = args.output
@@ -237,9 +244,8 @@ try:
         # get the min x, and what would have been the max y, because y is inverted with the scale factor so max is min
         offset = [scaled_bbox[0][0] - 200, scaled_bbox[1][1] - 400]
 
-        # colors for depth
+        # Depth limits for colors
         find_depth_limits(shp)
-        depth_color = plt.cm.Blues_r
         depth_norm = plt.Normalize(vmin=10*math.floor(deepest/10), vmax=0)
 
 except shapefile.ShapefileException as e:
