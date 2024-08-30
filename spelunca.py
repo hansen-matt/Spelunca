@@ -48,7 +48,7 @@ else:
 
 # colors for depth
 if args.rainbow:
-    depth_color = plt.cm.gist_rainbow_r
+    depth_color = plt.cm.gist_rainbow
 else:
     depth_color = plt.cm.Blues_r
 
