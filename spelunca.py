@@ -56,7 +56,7 @@ else:
 output_svg_path = args.output
 
 # Create an SVG drawing
-svg_document = svgwrite.Drawing(output_svg_path, profile='tiny', size=(args.width*inch, args.height*inch))
+svg_document = svgwrite.Drawing(output_svg_path, profile='full', size=(args.width*inch, args.height*inch))
 inkscape = Inkscape(svg_document)
 
 # Add a border
