@@ -273,8 +273,6 @@ else:
                 gradient = polygon_depth[2]
                 if type(gradient) is svgwrite.gradients.LinearGradient:
                     gradient = map_layer.add(gradient)
-                else:
-                    print(type(gradient))
                 polygon.fill(gradient)
                 map_layer.add(polygon)
     
