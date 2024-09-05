@@ -68,7 +68,7 @@ if args.border:
     border_layer.add(border)
 
 # Add a layer for the map
-map_layer = inkscape.layer(label="depth_map", locked=True)
+map_layer = inkscape.layer(label="depth_map", locked=False)
 svg_document.add(map_layer)
 
 ## Figure out the projection
