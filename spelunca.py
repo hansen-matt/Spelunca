@@ -117,6 +117,8 @@ def get_color(depth, depth_color, depth_norm):
 def get_gradient(start_xy, start_depth, stop_xy, stop_depth, depth_color, depth_norm):
     start_color = get_color(start_depth, depth_color, depth_norm)
     stop_color  = get_color(stop_depth , depth_color, depth_norm)
+    if start_depth == stop_depth: # don't need a gradient
+        return start_color
 
     minx = min( start_xy[0], stop_xy[0] )
     miny = min( start_xy[1], stop_xy[1] )
@@ -269,7 +271,10 @@ else:
             for polygon_depth in polygon_list:
                 polygon = polygon_depth[1]
                 gradient = polygon_depth[2]
-                gradient = map_layer.add(gradient)
+                if type(gradient) is svgwrite.gradients.LinearGradient:
+                    gradient = map_layer.add(gradient)
+                else:
+                    print(type(gradient))
                 polygon.fill(gradient)
                 map_layer.add(polygon)
     
