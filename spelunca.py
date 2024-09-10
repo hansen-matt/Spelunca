@@ -197,7 +197,7 @@ def make_polygon_list(shp):
         # Handle 3D polygons (shapefile.POLYGONZ). Ignore the Z-coordinate for projection, but use it for color
         if geometry.shapeType == shapefile.POLYGONZ:
             for part in geometry.parts:
-                points_xy  = geometry.points #[part:part + geometry.parts[0]]
+                points_xy  = geometry.points
                 points_z   = geometry.z
 
                 min_depth = np.min(points_z)
