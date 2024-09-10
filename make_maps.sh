@@ -7,8 +7,8 @@ mkdir -p $OUTPUT_PATH/madison
 python3 ./spelunca.py -o $OUTPUT_PATH/madison/map.svg $INPUT_PATH/MBSP_3Dpas.zip
 echo ""
 
-echo "Making Madison cavern inset"
-python3 ./spelunca.py -o $OUTPUT_PATH/madison/cavern_inset.svg --inset_x1 47 --inset_x2 65 --inset_y1 23 --inset_y2 40 --max_depth -100 $INPUT_PATH/MBSP_3Dpas.zip
+echo "Making Madison mini map"
+python3 ./spelunca.py -o $OUTPUT_PATH/madison/mini_map.svg --inset_x1 35 --inset_x2 65 --inset_y1 30 --inset_y2 60 $INPUT_PATH/MBSP_3Dpas.zip
 echo ""
 
 echo "Making Madison depth scale"
