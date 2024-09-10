@@ -8,7 +8,7 @@ python3 ./spelunca.py -o $OUTPUT_PATH/madison/map.svg $INPUT_PATH/MBSP_3Dpas.zip
 echo ""
 
 echo "Making Madison mini map"
-python3 ./spelunca.py -o $OUTPUT_PATH/madison/mini_map.svg --inset_x1 35 --inset_x2 65 --inset_y1 30 --inset_y2 60 --stretch $INPUT_PATH/MBSP_3Dpas.zip
+python3 ./spelunca.py -o $OUTPUT_PATH/madison/mini_map.svg --inset_x1 35 --inset_x2 65 --inset_y1 30 --inset_y2 60 $INPUT_PATH/MBSP_3Dpas.zip
 echo ""
 
 echo "Making Madison depth scale"
