@@ -180,11 +180,11 @@ def make_depth_scale(svg_document, min_depth, max_depth):
         offset_xy = [[x, 0], [x, 100], [x+2, 100], [x+2, 0], [x, 0]]
         depth = min_depth + x*depth_step
         color = get_color(depth, depth_color, depth_norm)
-        polygon = svg_document.polygon(points=offset_xy, fill=color) #, stroke='none', stroke_width=0.0*mm)
+        polygon = svg_document.polygon(points=offset_xy, fill=color)
         map_layer.add(polygon)
 
 def make_polygon(offset_xy, color, svg_document):
-    polygon = svg_document.polygon(points=offset_xy, fill=color) #, stroke='none', stroke_width=0.0*mm)
+    polygon = svg_document.polygon(points=offset_xy, fill=color)
     return polygon
 
 def make_polygon_list(shp):
