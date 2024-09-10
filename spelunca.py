@@ -33,6 +33,7 @@ parser.add_argument("--border-offset", help="Offset from edge to border, in inch
 parser.add_argument("--width", help="Width of image in inches", default=36, type=float)
 parser.add_argument("--height", help="Height of image in inches", default=24, type=float)
 parser.add_argument("--depth_scale", help="Output a depth scale gradient", action='store_true')
+parser.add_argument("--stretch", help="Stretch to fit", action='store_true')
 args = parser.parse_args()
 
 # Input shapefile path (update with your file path)
