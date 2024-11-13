@@ -1,3 +1,0 @@
-[submodule "svg_py"]
-	path = svg_py
-	url = git@github.com:orsinium-labs/svg.py.git
