@@ -22,6 +22,8 @@ parser.add_argument("filename", nargs="+",  help = "List input 3d passage shapef
 parser.add_argument("-u", "--utm_zone", help = "UTM zone for map projection", default=17, type=int)
 args = parser.parse_args()
 
+master_bbox = [[math.nan, math.nan], [math.nan, math.nan]]
+
 for shapefile_path in args.filename:
     # Input shapefile path
     if shapefile_path == "":
@@ -57,12 +59,13 @@ for shapefile_path in args.filename:
             scaled_bbox = np.multiply(transformed_bbox, scale_factor_xy)
             # get the min x, and what would have been the max y, because y is inverted with the scale factor so max is min
             offset = [scaled_bbox[0][0] - 200, scaled_bbox[1][1] - 400]
-    
-            print("Bounding box: ", scaled_bbox)
-    
+
+            master_bbox[0][0] = max(scaled_bbox[0][0], master_bbox[0][0])
+            master_bbox[0][1] = min(scaled_bbox[0][1], master_bbox[0][1])
+            master_bbox[1][0] = max(scaled_bbox[1][0], master_bbox[1][0])
+            master_bbox[1][1] = min(scaled_bbox[1][1], master_bbox[1][1])
     
     except shapefile.ShapefileException as e:
         print(f"Error processing shapefile: {str(e)}")
 
-
-
+print(master_bbox)
