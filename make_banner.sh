@@ -3,7 +3,7 @@ INPUT_PATH="../cave_maps/input_3d"
 OUTPUT_PATH="../cave_maps/output"
 
 echo "BOUNDING BOX"
-python3 ./find_bounding.box.py $INPUT_PATH/Agate-Hardee_3Dpas.zip $INPUT_PATH/PotSpring_3Dpas.zip $INPUT_PATH/MBSP_3Dpas.zip $INPUT_PATH/'M2 Blue Cave_3Dpas.zip' $INPUT_PATH/'M2 Blue Cave_3Dpas.zip'
+python3 ./find_bounding_box.py $INPUT_PATH/Agate-Hardee_3Dpas.zip $INPUT_PATH/PotSpring_3Dpas.zip $INPUT_PATH/MBSP_3Dpas.zip $INPUT_PATH/'M2 Blue Cave_3Dpas.zip' $INPUT_PATH/'M2 Blue Cave_3Dpas.zip'
 
 echo "Making Withlacoochee banner"
 mkdir -p $OUTPUT_PATH/banner
