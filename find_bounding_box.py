@@ -20,6 +20,7 @@ msg = "Determine a master bounding box from multiple 3d shapefiles"
 parser = argparse.ArgumentParser(description = msg)
 parser.add_argument("filename", nargs="+",  help = "List input 3d passage shapefile (.zip), space separated", default="")
 parser.add_argument("-u", "--utm_zone", help = "UTM zone for map projection", default=17, type=int)
+parser.add_argument("--scale_factor", help="Set the scale factor, feet per cm", default=30, type=float)
 args = parser.parse_args()
 
 master_bbox = [[math.nan, math.nan], [math.nan, math.nan]]
@@ -45,7 +46,7 @@ for shapefile_path in args.filename:
     projector = pyproj.Transformer.from_proj(inProj, outProj)
     
     # Define the scale factor for 30 feet = 1 inch
-    scale_factor = 12.0*2.54 / (30.0)  # Convert 30 feet to cm
+    scale_factor = 12.0*2.54 / (args.scale_factor)  # Convert 30 feet to cm
     # y is north up, PNG is positive down, so invert
     scale_factor_xy = [scale_factor, -1*scale_factor]
     
