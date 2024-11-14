@@ -21,7 +21,7 @@ parser = argparse.ArgumentParser(description = msg)
 parser.add_argument("filename",  help = "Set input 3d passage shapefile (.zip)", default="")
 parser.add_argument("-o", "--output", help = "Filename for the output image", default="output.svg")
 parser.add_argument("--bounding_box", help = "Derive bounding box from a different shapefile. Useful for putting multiple caves on a single map")
-parser.add_argument("--set_bounding_box", type=comma_separated_list, help="Set the bounding box with a comma separated list")
+parser.add_argument("--set_bounding_box", type=float, nargs=4, help="Set the bounding box with a list of 4 values (use find_bounding_box.py)")
 parser.add_argument("--inset_x1", help = "Starting point for inset, expressed as a % of width (0-100)", default=0, type=float)
 parser.add_argument("--inset_x2", help = "Ending point for inset, expressed as a % of width (0-100)", default=100, type=float)
 parser.add_argument("--inset_y1", help = "Starting point for inset, expressed as a % of height (0-100)", default=0, type=float)
@@ -244,9 +244,13 @@ shapefile_encoding = "ISO8859-1"
 # Find the bounding box and offset
 try:
     with shapefile.Reader(bbox_path, encoding=shapefile_encoding) as shp:
-        bbox = [(shp.bbox[0], shp.bbox[2], shp.zbox[0]), (shp.bbox[1], shp.bbox[3], shp.zbox[1])]
-        transformed_bbox = [projector.transform(x, y) for x, y, z in bbox]
-        scaled_bbox = np.multiply(transformed_bbox, scale_factor_xy)
+        if args.set_bounding_box:
+            scaled_bbox = [[args.set_bounding_box[0], args.set_bounding_box[1]], [args.set_bounding_box[2], args.set_bounding_box[3]]]
+        else:
+           bbox = [(shp.bbox[0], shp.bbox[2], shp.zbox[0]), (shp.bbox[1], shp.bbox[3], shp.zbox[1])]
+           transformed_bbox = [projector.transform(x, y) for x, y, z in bbox]
+           scaled_bbox = np.multiply(transformed_bbox, scale_factor_xy)
+
         # get the min x, and what would have been the max y, because y is inverted with the scale factor so max is min
         offset = [scaled_bbox[0][0] - 200, scaled_bbox[1][1] - 400]
 
