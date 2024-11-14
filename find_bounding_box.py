@@ -68,4 +68,4 @@ for shapefile_path in args.filename:
     except shapefile.ShapefileException as e:
         print(f"Error processing shapefile: {str(e)}")
 
-print(master_bbox)
+print(master_bbox[0][0], " ", master_bbox[0][1], " ",master_bbox[1][0], " ",master_bbox[1][1])
