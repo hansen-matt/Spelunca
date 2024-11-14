@@ -22,6 +22,7 @@ parser.add_argument("filename",  help = "Set input 3d passage shapefile (.zip)",
 parser.add_argument("-o", "--output", help = "Filename for the output image", default="output.svg")
 parser.add_argument("--bounding_box", help = "Derive bounding box from a different shapefile. Useful for putting multiple caves on a single map")
 parser.add_argument("--set_bounding_box", type=float, nargs=4, help="Set the bounding box with a list of 4 values (use find_bounding_box.py)")
+parser.add_argument("--scale_factor", help="Set the scale factor, feet per cm", default=30, type=float)
 parser.add_argument("--inset_x1", help = "Starting point for inset, expressed as a % of width (0-100)", default=0, type=float)
 parser.add_argument("--inset_x2", help = "Ending point for inset, expressed as a % of width (0-100)", default=100, type=float)
 parser.add_argument("--inset_y1", help = "Starting point for inset, expressed as a % of height (0-100)", default=0, type=float)
@@ -88,7 +89,7 @@ outProj = pyproj.Proj(f"EPSG:326{args.utm_zone}")
 projector = pyproj.Transformer.from_proj(inProj, outProj)
 
 # Define the scale factor for 30 feet = 1 inch
-scale_factor = 12.0*2.54 / (30.0)  # Convert 30 feet to cm
+scale_factor = 12.0*2.54 / (args.scale_factor)  # Convert 30 feet to cm
 # y is north up, PNG is positive down, so invert
 scale_factor_xy = [scale_factor, -1*scale_factor]
 
