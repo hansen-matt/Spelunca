@@ -51,17 +51,15 @@ for shapefile_path in args.filename:
     
     shapefile_encoding = "ISO8859-1"
     
-    # Find the bounding box and offset
+    # Find the bounding box 
     try:
         with shapefile.Reader(shapefile_path, encoding=shapefile_encoding) as shp:
             bbox = [(shp.bbox[0], shp.bbox[2], shp.zbox[0]), (shp.bbox[1], shp.bbox[3], shp.zbox[1])]
             transformed_bbox = [projector.transform(x, y) for x, y, z in bbox]
             scaled_bbox = np.multiply(transformed_bbox, scale_factor_xy)
-            # get the min x, and what would have been the max y, because y is inverted with the scale factor so max is min
-            offset = [scaled_bbox[0][0] - 200, scaled_bbox[1][1] - 400]
 
-            master_bbox[0][0] = max(scaled_bbox[0][0], master_bbox[0][0])
-            master_bbox[0][1] = min(scaled_bbox[0][1], master_bbox[0][1])
+            master_bbox[0][0] = min(scaled_bbox[0][0], master_bbox[0][0])
+            master_bbox[0][1] = max(scaled_bbox[0][1], master_bbox[0][1])
             master_bbox[1][0] = max(scaled_bbox[1][0], master_bbox[1][0])
             master_bbox[1][1] = min(scaled_bbox[1][1], master_bbox[1][1])
     
