@@ -23,7 +23,6 @@ parser.add_argument("-u", "--utm_zone", help = "UTM zone for map projection", de
 args = parser.parse_args()
 
 for shapefile_path in args.filename:
-    print("Path: ", shapefile_path)
     # Input shapefile path
     if shapefile_path == "":
         parser.print_help()
@@ -47,9 +46,6 @@ for shapefile_path in args.filename:
     scale_factor = 12.0*2.54 / (30.0)  # Convert 30 feet to cm
     # y is north up, PNG is positive down, so invert
     scale_factor_xy = [scale_factor, -1*scale_factor]
-    
-    shallowest = -float('inf');
-    deepest = float('inf');
     
     shapefile_encoding = "ISO8859-1"
     
