@@ -25,6 +25,22 @@ args = parser.parse_args()
 
 master_bbox = [[math.nan, math.nan], [math.nan, math.nan]]
 
+shallowest = -float('inf');
+deepest = float('inf');
+
+def find_depth_limits(shp):
+    global shallowest
+    global deepest
+    for shape_record in shp.iterShapeRecords():
+        geometry = shape_record.shape
+        if geometry.shapeType == shapefile.POLYGONZ:
+            for part in geometry.parts:
+                points_z = geometry.z
+                min_depth = np.min(points_z)
+                max_depth = np.max(points_z)
+                shallowest= max(shallowest, min_depth)
+                deepest = min(deepest, max_depth)
+
 for shapefile_path in args.filename:
     # Input shapefile path
     if shapefile_path == "":
@@ -58,6 +74,7 @@ for shapefile_path in args.filename:
             bbox = [(shp.bbox[0], shp.bbox[2], shp.zbox[0]), (shp.bbox[1], shp.bbox[3], shp.zbox[1])]
             transformed_bbox = [projector.transform(x, y) for x, y, z in bbox]
             scaled_bbox = np.multiply(transformed_bbox, scale_factor_xy)
+            find_depth_limits(shp)
 
             master_bbox[0][0] = min(scaled_bbox[0][0], master_bbox[0][0])
             master_bbox[0][1] = max(scaled_bbox[0][1], master_bbox[0][1])
@@ -67,4 +84,4 @@ for shapefile_path in args.filename:
     except shapefile.ShapefileException as e:
         print(f"Error processing shapefile: {str(e)}")
 
-print(master_bbox[0][0], " ", master_bbox[0][1], " ",master_bbox[1][0], " ",master_bbox[1][1])
+print(master_bbox[0][0], " ", master_bbox[0][1], " ",master_bbox[1][0], " ",master_bbox[1][1]," ",shallowest," ",deepest)
