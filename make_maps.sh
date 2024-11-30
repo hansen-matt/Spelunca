@@ -21,6 +21,12 @@ BOUNDING_BOX=$(python3 ./find_bounding_box.py $INPUT_PATH/MBSP_3Dpas.zip)
 python3 ./spelunca.py -o $OUTPUT_PATH/pot/map.svg --set_bounding_box $BOUNDING_BOX $INPUT_PATH/PotSpring_3Dpas.zip
 echo ""
 
+echo "Making David's Disappointment map"
+mkdir -p $OUTPUT_PATH/davids_disappointment
+BOUNDING_BOX=$(python3 ./find_bounding_box.py $INPUT_PATH/MBSP_3Dpas.zip)
+python3 ./spelunca.py -o $OUTPUT_PATH/davids_disappointment/map.svg --set_bounding_box $BOUNDING_BOX $INPUT_PATH/DavidsDisappointment_3Dpas.zip
+echo ""
+
 echo "Making M2 map"
 mkdir -p $OUTPUT_PATH/m2
 python3 ./spelunca.py -o $OUTPUT_PATH/m2/map.svg $INPUT_PATH/'M2 Blue Cave_3Dpas.zip' --width=24 --height=36
